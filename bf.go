@@ -31,6 +31,8 @@ const dataSize int = math.MaxUint16
 func compile(input io.ByteReader) (program []Instruction, err error) {
 	var pc, jmpPc int = 0, 0
 	jmpStack := make([]int, 0)
+	program = append(program, Instruction{opNoop, 0})
+	pc++
 	for {
 		chr, err := input.ReadByte()
 		if err == io.EOF {
@@ -41,12 +43,32 @@ func compile(input io.ByteReader) (program []Instruction, err error) {
 		switch chr {
 		case '>':
 			program = append(program, Instruction{opAddDp, 1})
+			if program[len(program)-2].operator == opAddDp {
+				pc--
+				program[len(program)-2].operand++
+				program = program[:len(program)-1]
+			}
 		case '<':
 			program = append(program, Instruction{opAddDp, -1})
+			if program[len(program)-2].operator == opAddDp {
+				pc--
+				program[len(program)-2].operand--
+				program = program[:len(program)-1]
+			}
 		case '+':
 			program = append(program, Instruction{opAddVal, 1})
+			if program[len(program)-2].operator == opAddVal {
+				pc--
+				program[len(program)-2].operand++
+				program = program[:len(program)-1]
+			}
 		case '-':
 			program = append(program, Instruction{opAddVal, -1})
+			if program[len(program)-2].operator == opAddVal {
+				pc--
+				program[len(program)-2].operand--
+				program = program[:len(program)-1]
+			}
 		case '.':
 			program = append(program, Instruction{opOut, 0})
 		case ',':
