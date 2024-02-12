@@ -26,7 +26,7 @@ const (
 	opZero
 )
 
-const dataSize int = math.MaxUint16
+const dataSize int = math.MaxUint16 + 1
 
 func compile(input io.ByteReader) (program []Instruction, err error) {
 	var pc, jmpPc int = 0, 0
@@ -43,31 +43,31 @@ func compile(input io.ByteReader) (program []Instruction, err error) {
 		switch chr {
 		case '>':
 			program = append(program, Instruction{opAddDp, 1})
-			if program[len(program)-2].operator == opAddDp {
+			if program[pc - 1].operator == opAddDp {
+				program = program[:pc]
 				pc--
-				program[len(program)-2].operand++
-				program = program[:len(program)-1]
+				program[pc].operand++
 			}
 		case '<':
 			program = append(program, Instruction{opAddDp, -1})
-			if program[len(program)-2].operator == opAddDp {
+			if program[pc - 1].operator == opAddDp {
+				program = program[:pc]
 				pc--
-				program[len(program)-2].operand--
-				program = program[:len(program)-1]
+				program[pc].operand--
 			}
 		case '+':
 			program = append(program, Instruction{opAddVal, 1})
-			if program[len(program)-2].operator == opAddVal {
+			if program[pc - 1].operator == opAddVal {
+				program = program[:pc]
 				pc--
-				program[len(program)-2].operand++
-				program = program[:len(program)-1]
+				program[pc].operand++
 			}
 		case '-':
 			program = append(program, Instruction{opAddVal, -1})
-			if program[len(program)-2].operator == opAddVal {
+			if program[pc - 1].operator == opAddVal {
+				program = program[:pc]
 				pc--
-				program[len(program)-2].operand--
-				program = program[:len(program)-1]
+				program[pc].operand--
 			}
 		case '.':
 			program = append(program, Instruction{opOut, 0})
@@ -84,10 +84,10 @@ func compile(input io.ByteReader) (program []Instruction, err error) {
 			jmpStack = jmpStack[:len(jmpStack)-1]
 			program = append(program, Instruction{opJmpNz, jmpPc})
 			program[jmpPc].operand = pc
-			if pc-jmpPc == 2 && program[len(program)-2].operator == opAddVal {
+			if pc-jmpPc == 2 && program[pc - 1].operator == opAddVal {
 				pc--
 				pc--
-				program = program[:len(program)-3]
+				program = program[:pc]
 				program = append(program, Instruction{opZero, 0})
 			}
 		default:
@@ -108,12 +108,7 @@ func execute(program []Instruction, reader io.ByteReader) {
 		switch program[pc].operator {
 		case opAddDp:
 			dataPtr += program[pc].operand
-			// data pointer wraparound
-			if dataPtr >= dataSize {
-				dataPtr -= dataSize
-			} else if dataPtr < 0 {
-				dataPtr += dataSize
-			}
+			dataPtr = dataPtr & 0xFFFF
 		case opAddVal:
 			data[dataPtr] += int16(program[pc].operand)
 		case opOut:
