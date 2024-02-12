@@ -16,12 +16,14 @@ type Instruction struct {
 }
 
 const (
-	opAddDp = iota
+	opNoop = iota
+	opAddDp
 	opAddVal
 	opOut
 	opIn
 	opJmpZ
 	opJmpNz
+	opZero
 )
 
 const dataSize int = math.MaxUint16
@@ -60,6 +62,12 @@ func compile(input io.ByteReader) (program []Instruction, err error) {
 			jmpStack = jmpStack[:len(jmpStack)-1]
 			program = append(program, Instruction{opJmpNz, jmpPc})
 			program[jmpPc].operand = pc
+			if pc-jmpPc == 2 && program[len(program)-2].operator == opAddVal {
+				pc--
+				pc--
+				program = program[:len(program)-3]
+				program = append(program, Instruction{opZero, 0})
+			}
 		default:
 			pc--
 		}
@@ -98,6 +106,10 @@ func execute(program []Instruction, reader io.ByteReader) {
 			if data[dataPtr] != 0 {
 				pc = program[pc].operand
 			}
+		case opZero:
+			data[dataPtr] = 0
+		case opNoop:
+			continue
 		default:
 			panic("Unknown operator.")
 		}
