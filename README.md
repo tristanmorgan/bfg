@@ -11,3 +11,4 @@ repeat ++++ or --- are replaced with a single addition/subtraction
 
 repeat >>> or <<< are replaced with a single pointer jump
 
+[>>+<<-] and [->>+<<] merged into a move instruction.

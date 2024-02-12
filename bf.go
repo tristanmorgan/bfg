@@ -24,6 +24,7 @@ const (
 	opJmpZ
 	opJmpNz
 	opZero
+	opMove
 )
 
 const dataSize int = math.MaxUint16 + 1
@@ -43,28 +44,28 @@ func compile(input io.ByteReader) (program []Instruction, err error) {
 		switch chr {
 		case '>':
 			program = append(program, Instruction{opAddDp, 1})
-			if program[pc - 1].operator == opAddDp {
+			if program[pc-1].operator == opAddDp {
 				program = program[:pc]
 				pc--
 				program[pc].operand++
 			}
 		case '<':
 			program = append(program, Instruction{opAddDp, -1})
-			if program[pc - 1].operator == opAddDp {
+			if program[pc-1].operator == opAddDp {
 				program = program[:pc]
 				pc--
 				program[pc].operand--
 			}
 		case '+':
 			program = append(program, Instruction{opAddVal, 1})
-			if program[pc - 1].operator == opAddVal {
+			if program[pc-1].operator == opAddVal {
 				program = program[:pc]
 				pc--
 				program[pc].operand++
 			}
 		case '-':
 			program = append(program, Instruction{opAddVal, -1})
-			if program[pc - 1].operator == opAddVal {
+			if program[pc-1].operator == opAddVal {
 				program = program[:pc]
 				pc--
 				program[pc].operand--
@@ -84,11 +85,37 @@ func compile(input io.ByteReader) (program []Instruction, err error) {
 			jmpStack = jmpStack[:len(jmpStack)-1]
 			program = append(program, Instruction{opJmpNz, jmpPc})
 			program[jmpPc].operand = pc
-			if pc-jmpPc == 2 && program[pc - 1].operator == opAddVal {
+			if pc-jmpPc == 2 && program[pc-1].operator == opAddVal {
 				pc--
 				pc--
 				program = program[:pc]
 				program = append(program, Instruction{opZero, 0})
+			}
+			if pc-jmpPc == 5 &&
+				program[pc-4].operator == opAddVal &&
+				program[pc-3].operator == opAddDp &&
+				program[pc-2].operator == opAddVal &&
+				program[pc-1].operator == opAddDp &&
+				program[pc-4].operand == -1 &&
+				program[pc-2].operand == 1 &&
+				program[pc-3].operand+program[pc-1].operand == 0 {
+				offset := program[pc-3].operand
+				pc -= 5
+				program = program[:pc]
+				program = append(program, Instruction{opMove, offset})
+			}
+			if pc-jmpPc == 5 &&
+				program[pc-4].operator == opAddDp &&
+				program[pc-3].operator == opAddVal &&
+				program[pc-2].operator == opAddDp &&
+				program[pc-1].operator == opAddVal &&
+				program[pc-3].operand == 1 &&
+				program[pc-1].operand == -1 &&
+				program[pc-4].operand+program[pc-2].operand == 0 {
+				offset := program[pc-4].operand
+				pc -= 5
+				program = program[:pc]
+				program = append(program, Instruction{opMove, offset})
 			}
 		default:
 			pc--
@@ -130,6 +157,10 @@ func execute(program []Instruction, reader io.ByteReader) {
 				pc = program[pc].operand
 			}
 		case opZero:
+			data[dataPtr] = 0
+		case opMove:
+			destPtr := (program[pc].operand + dataPtr) & 0xFFFF
+			data[destPtr] += data[dataPtr]
 			data[dataPtr] = 0
 		case opNoop:
 			continue
