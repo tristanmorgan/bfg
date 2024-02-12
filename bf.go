@@ -86,10 +86,16 @@ func execute(program []Instruction, reader io.ByteReader) {
 		switch program[pc].operator {
 		case opAddDp:
 			dataPtr += program[pc].operand
+			// data pointer wraparound
+			if dataPtr >= dataSize {
+				dataPtr -= dataSize
+			} else if dataPtr < 0 {
+				dataPtr += dataSize
+			}
 		case opAddVal:
 			data[dataPtr] += int16(program[pc].operand)
 		case opOut:
-			fmt.Printf("%c", data[dataPtr])
+			fmt.Printf("%c", data[dataPtr]&0xff)
 		case opIn:
 			readVal, err := reader.ReadByte()
 			data[dataPtr] = int16(readVal)
