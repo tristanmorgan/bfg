@@ -8,7 +8,7 @@ import (
 
 const dataSize int = math.MaxUint16 + 1
 
-func Execute(program []Instruction, reader io.ByteReader) {
+func Execute(program []Instruction, reader io.ByteReader) []int16 {
 	data := make([]int16, dataSize)
 	var dataPtr int = 0
 	for pc := 0; pc < len(program); pc++ {
@@ -48,4 +48,5 @@ func Execute(program []Instruction, reader io.ByteReader) {
 			panic("Unknown operator.")
 		}
 	}
+	return data
 }
