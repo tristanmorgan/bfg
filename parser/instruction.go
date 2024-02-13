@@ -19,3 +19,22 @@ const (
 	opZero
 	opMove
 )
+
+func (inst Instruction) String() string {
+	opName := [...]string{
+		"nop",
+		"ptr",
+		"add",
+		"out",
+		"in",
+		"jmpz",
+		"jmpnz",
+		"zero",
+		"mov",
+	}
+	return opName[inst.operator]
+}
+
+func (inst Instruction) SameOp(instTwo Instruction) bool {
+	return inst.operator == instTwo.operator
+}
