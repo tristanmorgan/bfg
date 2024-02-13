@@ -8,6 +8,7 @@ import (
 
 const dataSize int = math.MaxUint16 + 1
 
+// Execute a compiled program
 func Execute(program []Instruction, reader io.ByteReader, writer *bufio.Writer) []int16 {
 	data := make([]int16, dataSize)
 	var dataPtr, writeCount int = 0, 0

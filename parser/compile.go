@@ -5,6 +5,7 @@ import (
 	"io"
 )
 
+// Compile sourcecode into a program
 func Compile(input io.ByteReader) (program []Instruction, err error) {
 	var pc, jmpPc int = 0, 0
 	jmpStack := make([]int, 0)
@@ -17,49 +18,32 @@ func Compile(input io.ByteReader) (program []Instruction, err error) {
 		} else if err != nil {
 			return nil, errors.New("compilation read error")
 		}
-		switch chr {
-		case '>':
-			program = append(program, Instruction{opAddDp, 1})
-			if program[pc-1].operator == opAddDp {
+		program = append(program, NewInstruction(chr))
+		switch program[pc].operator {
+		case opNoop:
+			program = program[:pc]
+			pc--
+		case opAddDp:
+			if program[pc-1].SameOp(program[pc]) {
+				program[pc-1].operand += program[pc].operand
 				program = program[:pc]
 				pc--
-				program[pc].operand++
 			}
-		case '<':
-			program = append(program, Instruction{opAddDp, -1})
-			if program[pc-1].operator == opAddDp {
+		case opAddVal:
+			if program[pc-1].SameOp(program[pc]) {
+				program[pc-1].operand += program[pc].operand
 				program = program[:pc]
 				pc--
-				program[pc].operand--
 			}
-		case '+':
-			program = append(program, Instruction{opAddVal, 1})
-			if program[pc-1].operator == opAddVal {
-				program = program[:pc]
-				pc--
-				program[pc].operand++
-			}
-		case '-':
-			program = append(program, Instruction{opAddVal, -1})
-			if program[pc-1].operator == opAddVal {
-				program = program[:pc]
-				pc--
-				program[pc].operand--
-			}
-		case '.':
-			program = append(program, Instruction{opOut, 0})
-		case ',':
-			program = append(program, Instruction{opIn, 0})
-		case '[':
-			program = append(program, Instruction{opJmpZ, 0})
+		case opJmpZ:
 			jmpStack = append(jmpStack, pc)
-		case ']':
+		case opJmpNz:
 			if len(jmpStack) == 0 {
 				return nil, errors.New("compilation error: unbalanced braces")
 			}
 			jmpPc = jmpStack[len(jmpStack)-1]
 			jmpStack = jmpStack[:len(jmpStack)-1]
-			program = append(program, Instruction{opJmpNz, jmpPc})
+			program[pc].operand = jmpPc
 			program[jmpPc].operand = pc
 			if pc-jmpPc == 2 && program[pc-1].operator == opAddVal {
 				pc--
@@ -93,8 +77,6 @@ func Compile(input io.ByteReader) (program []Instruction, err error) {
 				program = program[:pc]
 				program = append(program, Instruction{opMove, offset})
 			}
-		default:
-			pc--
 		}
 		pc++
 	}
