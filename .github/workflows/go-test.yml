@@ -34,4 +34,7 @@ jobs:
       working-directory: ./cmd/bfg
       run: go build -a -trimpath -ldflags='-s -w' -o bfg_linux
 
-
+    - uses: actions/upload-artifact@v4
+      with:
+        name: bfg-build
+        path: cmd/bfg/bfg_linux
