@@ -2,13 +2,13 @@ package parser
 
 import (
 	"bufio"
+	"os"
 	"reflect"
 	"strings"
 	"testing"
 )
 
 func TestExecuteSmall(t *testing.T) {
-	//func Execute(program []Instruction, reader io.ByteReader) []int16
 	program := []Instruction{
 		Instruction{opNoop, 0},
 		Instruction{opAddDp, 5},
@@ -17,7 +17,9 @@ func TestExecuteSmall(t *testing.T) {
 		Instruction{opMove, 2},
 		Instruction{opAddDp, 2},
 	}
-	data := Execute(program, bufio.NewReader(strings.NewReader("no input.")))[:10]
+	outputBuf := bufio.NewWriter(os.Stdout)
+	inputBuf := bufio.NewReader(strings.NewReader("no input."))
+	data := Execute(program, inputBuf, outputBuf)[:10]
 	want := []int16{0, 0, 0, 0, 0, 0, 0, 5, 0, 0}
 
 	if !reflect.DeepEqual(data, want) {

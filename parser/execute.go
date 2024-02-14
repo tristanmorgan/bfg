@@ -1,16 +1,16 @@
 package parser
 
 import (
-	"fmt"
+	"bufio"
 	"io"
 	"math"
 )
 
 const dataSize int = math.MaxUint16 + 1
 
-func Execute(program []Instruction, reader io.ByteReader) []int16 {
+func Execute(program []Instruction, reader io.ByteReader, writer *bufio.Writer) []int16 {
 	data := make([]int16, dataSize)
-	var dataPtr int = 0
+	var dataPtr, writeCount int = 0, 0
 	for pc := 0; pc < len(program); pc++ {
 		switch program[pc].operator {
 		case opAddDp:
@@ -19,8 +19,17 @@ func Execute(program []Instruction, reader io.ByteReader) []int16 {
 		case opAddVal:
 			data[dataPtr] += int16(program[pc].operand)
 		case opOut:
-			fmt.Printf("%c", data[dataPtr]&0xff)
+			writer.WriteByte(byte(data[dataPtr] & 0xff))
+			writeCount++
+			if data[dataPtr] == 10 || writeCount > 200 {
+				writer.Flush()
+				writeCount = 0
+			}
 		case opIn:
+			if writeCount > 0 {
+				writer.Flush()
+				writeCount = 0
+			}
 			readVal, err := reader.ReadByte()
 			data[dataPtr] = int16(readVal)
 			if err == io.EOF {

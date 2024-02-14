@@ -12,3 +12,5 @@ repeat ++++ or --- are replaced with a single addition/subtraction
 repeat >>> or <<< are replaced with a single pointer jump
 
 [>>+<<-] and [->>+<<] merged into a move instruction.
+
+buffered output prints on newline, 200 chars or input.

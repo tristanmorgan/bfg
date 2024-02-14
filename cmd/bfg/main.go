@@ -49,11 +49,13 @@ func main() {
 		}
 		inputBuf = bufio.NewReader(file)
 	}
+	outputBuf := bufio.NewWriter(os.Stdout)
+	defer outputBuf.Flush()
 
 	program, err := parser.Compile(sourceBuf)
 	if err != nil {
 		fmt.Println("error compiling program: err:", err)
 		os.Exit(1)
 	}
-	parser.Execute(program, inputBuf)
+	parser.Execute(program, inputBuf, outputBuf)
 }
