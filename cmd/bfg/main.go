@@ -2,36 +2,58 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
+	"io"
 	"os"
 
 	"github.com/tristanmorgan/bfg/parser"
 )
 
 func main() {
-	args := os.Args
-	if len(args) < 2 {
-		fmt.Printf("Usage: %s file\n", args[0])
-		return
+	version := flag.Bool("version", false, "display version")
+
+	flag.Usage = func() {
+		fmt.Printf("Usage:\n  %s [option] source.bf [input]\n", os.Args[0])
+		fmt.Println("\nOptions:")
+		flag.PrintDefaults()
 	}
-	file, err := os.Open(args[1])
-	if err != nil {
-		fmt.Println("Error reading source file")
-		return
+
+	flag.Parse()
+	if *version {
+		fmt.Println("Version 0.0.1")
+		os.Exit(0)
 	}
-	program, err := parser.Compile(bufio.NewReader(file))
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	input := bufio.NewReader(os.Stdin)
-	if len(args) > 2 {
-		file, err = os.Open(args[2])
+
+	var sourceBuf, inputBuf io.ByteReader
+	source := flag.Arg(0)
+	input := flag.Arg(1)
+	if source == "" {
+		fmt.Println("please provide a source file")
+		os.Exit(1)
+	} else {
+		sourceFile, err := os.Open(source)
 		if err != nil {
-			fmt.Println("Error reading input file")
-			return
+			fmt.Println("error opening source file: err:", err)
+			os.Exit(1)
 		}
-		input = bufio.NewReader(file)
+		sourceBuf = bufio.NewReader(sourceFile)
 	}
-	parser.Execute(program, input)
+	if input == "" {
+		inputBuf = bufio.NewReader(os.Stdin)
+	} else {
+		file, err := os.Open(input)
+		if err != nil {
+			fmt.Println("error opening input file: err:", err)
+			os.Exit(1)
+		}
+		inputBuf = bufio.NewReader(file)
+	}
+
+	program, err := parser.Compile(sourceBuf)
+	if err != nil {
+		fmt.Println("error compiling program: err:", err)
+		os.Exit(1)
+	}
+	parser.Execute(program, inputBuf)
 }

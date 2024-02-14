@@ -1,5 +1,9 @@
 package parser
 
+import (
+	"fmt"
+)
+
 // Instruction structure for intermediate program
 type Instruction struct {
 	operator Opcode
@@ -32,7 +36,7 @@ func (inst Instruction) String() string {
 		"zero",
 		"mov",
 	}
-	return opName[inst.operator]
+	return fmt.Sprintf("%s: %v", opName[inst.operator], inst.operand)
 }
 
 func (inst Instruction) SameOp(instTwo Instruction) bool {
