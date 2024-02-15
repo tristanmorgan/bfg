@@ -53,9 +53,9 @@ func NewInstruction(chr byte) Instruction {
 	case '-':
 		return Instruction{opAddVal, -1}
 	case '.':
-		return Instruction{opOut, 0}
+		return Instruction{opOut, 1}
 	case ',':
-		return Instruction{opIn, 0}
+		return Instruction{opIn, 1}
 	case '[':
 		return Instruction{opJmpZ, 0}
 	case ']':
@@ -68,4 +68,9 @@ func NewInstruction(chr byte) Instruction {
 // SameOp compares Instructions operator but not operand
 func (inst Instruction) SameOp(instTwo Instruction) bool {
 	return inst.operator == instTwo.operator
+}
+
+// Complement compares Instructions operator and operand
+func (inst Instruction) Complement(instTwo Instruction) bool {
+	return inst.SameOp(instTwo) && inst.operand+instTwo.operand == 0
 }

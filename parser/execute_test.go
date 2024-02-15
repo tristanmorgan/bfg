@@ -26,3 +26,23 @@ func TestExecuteSmall(t *testing.T) {
 		t.Errorf("got %v want %v", data, want)
 	}
 }
+
+func TestCompileExecuteSmall(t *testing.T) {
+	program, _ := Compile(bufio.NewReader(strings.NewReader(
+		`+> >+> >+> >+> >
+>++++++++
+[
+  <
+  <[>+<-]> Add the next bit
+  [<++>-]  double the result
+  >[<+>-]< and move the bit counter
+-]`)))
+	outputBuf := bufio.NewWriter(os.Stdout)
+	inputBuf := bufio.NewReader(strings.NewReader("no input."))
+	data := Execute(program, inputBuf, outputBuf)[:10]
+	want := []int16{170, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+
+	if !reflect.DeepEqual(data, want) {
+		t.Errorf("got %v want %v", data, want)
+	}
+}

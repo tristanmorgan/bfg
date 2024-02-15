@@ -52,27 +52,13 @@ func Compile(input io.ByteReader) (program []Instruction, err error) {
 				program = append(program, Instruction{opZero, 0})
 			}
 			if pc-jmpPc == 5 &&
-				program[pc-4].operator == opAddVal &&
-				program[pc-3].operator == opAddDp &&
-				program[pc-2].operator == opAddVal &&
-				program[pc-1].operator == opAddDp &&
-				program[pc-4].operand == -1 &&
-				program[pc-2].operand == 1 &&
-				program[pc-3].operand+program[pc-1].operand == 0 {
-				offset := program[pc-3].operand
-				pc -= 5
-				program = program[:pc]
-				program = append(program, Instruction{opMove, offset})
-			}
-			if pc-jmpPc == 5 &&
-				program[pc-4].operator == opAddDp &&
-				program[pc-3].operator == opAddVal &&
-				program[pc-2].operator == opAddDp &&
-				program[pc-1].operator == opAddVal &&
-				program[pc-3].operand == 1 &&
-				program[pc-1].operand == -1 &&
-				program[pc-4].operand+program[pc-2].operand == 0 {
+				program[pc-4].Complement(program[pc-2]) &&
+				program[pc-3].Complement(program[pc-1]) &&
+				!program[pc-2].SameOp(program[pc-1]) {
 				offset := program[pc-4].operand
+				if program[pc-3].operator == opAddDp {
+					offset = program[pc-3].operand
+				}
 				pc -= 5
 				program = program[:pc]
 				program = append(program, Instruction{opMove, offset})
