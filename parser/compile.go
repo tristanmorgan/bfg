@@ -46,8 +46,7 @@ func Compile(input io.ByteReader) (program []Instruction, err error) {
 			program[pc].operand = jmpPc
 			program[jmpPc].operand = pc
 			if pc-jmpPc == 2 && program[pc-1].operator == opAddVal {
-				pc--
-				pc--
+				pc = jmpPc
 				program = program[:pc]
 				program = append(program, Instruction{opZero, 0})
 			}
@@ -59,7 +58,7 @@ func Compile(input io.ByteReader) (program []Instruction, err error) {
 				if program[pc-3].operator == opAddDp {
 					offset = program[pc-3].operand
 				}
-				pc -= 5
+				pc = jmpPc
 				program = program[:pc]
 				program = append(program, Instruction{opMove, offset})
 			}

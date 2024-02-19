@@ -31,6 +31,8 @@ func main() {
 	if source == "" {
 		fmt.Println("please provide a source file")
 		os.Exit(1)
+	} else if source == "-" {
+		sourceBuf = bufio.NewReader(os.Stdin)
 	} else {
 		sourceFile, err := os.Open(source)
 		if err != nil {

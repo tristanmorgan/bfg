@@ -46,14 +46,38 @@ func TestSameOp(t *testing.T) {
 	}
 
 	for row, rval := range opsList {
-		for col, cval := range opsList {
-			t.Run(fmt.Sprintf("%d-%d", row, col), func(t *testing.T) {
+		t.Run(fmt.Sprintf("%d", row), func(t *testing.T) {
+			for col, cval := range opsList {
 				rinst := Instruction{rval, col}
 				cinst := Instruction{cval, row}
 				want := row == col
 
 				if rinst.SameOp(cinst) != want {
 					t.Errorf("testing %v vs %v want %v", rinst, cinst, want)
+				}
+			}
+		})
+	}
+
+}
+
+func TestComplement(t *testing.T) {
+	opsList := []Opcode{
+		opAddDp,
+		opAddVal,
+	}
+
+	for row, rval := range opsList {
+		for col, cval := range opsList {
+			t.Run(fmt.Sprintf("%d-%d", row, col), func(t *testing.T) {
+				for operand := range [6]int{} {
+					rinst := Instruction{rval, operand}
+					cinst := Instruction{cval, operand - 6}
+					want := row == col && operand == 3
+
+					if rinst.Complement(cinst) != want {
+						t.Errorf("testing %v vs %v want %v", rinst, cinst, want)
+					}
 				}
 			})
 		}
