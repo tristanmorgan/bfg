@@ -11,11 +11,20 @@ import (
 func TestExecuteSmall(t *testing.T) {
 	program := []Instruction{
 		Instruction{opNoop, 0},
-		Instruction{opAddDp, 5},
-		Instruction{opSetVal, 0},
-		Instruction{opAddVal, 5},
-		Instruction{opMove, 2},
-		Instruction{opAddDp, 2},
+		Instruction{opAddDp, 1},
+		Instruction{opAddDp, 1},
+		Instruction{opAddDp, 1},
+		Instruction{opAddDp, 1},
+		Instruction{opAddDp, 1},
+		Instruction{opAddDp, 1},
+		Instruction{opAddDp, 1},
+		Instruction{opAddVal, 1},
+		Instruction{opAddVal, 1},
+		Instruction{opAddVal, 1},
+		Instruction{opAddVal, 1},
+		Instruction{opAddVal, 1},
+		Instruction{opAddDp, 1},
+		Instruction{opAddDp, 1},
 	}
 	outputBuf := bufio.NewWriter(os.Stdout)
 	inputBuf := bufio.NewReader(strings.NewReader("no input."))

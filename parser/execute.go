@@ -12,16 +12,13 @@ const dataMask int = math.MaxUint16
 // Execute a compiled program
 func Execute(program []Instruction, reader io.ByteReader, writer *bufio.Writer) []int {
 	data := make([]int, dataSize)
-	var dataPtr, operand, writeCount int = 0, 0, 0
+	var dataPtr, writeCount int = 0, 0
 	for pc := 0; pc < len(program); pc++ {
-		operand = program[pc].operand
 		switch program[pc].operator {
 		case opAddDp:
-			dataPtr = (operand + dataPtr) & dataMask
+			dataPtr = (program[pc].operand + dataPtr) & dataMask
 		case opAddVal:
-			data[dataPtr] += operand
-		case opSetVal:
-			data[dataPtr] = operand
+			data[dataPtr] += program[pc].operand
 		case opOut:
 			writer.WriteByte(byte(data[dataPtr]))
 			writeCount++
@@ -41,22 +38,30 @@ func Execute(program []Instruction, reader io.ByteReader, writer *bufio.Writer) 
 			} else if err != nil {
 				break
 			}
-		case opSkip:
-			for data[dataPtr] != 0 {
-				dataPtr = (operand + dataPtr) & dataMask
-			}
 		case opJmpZ:
 			if data[dataPtr] == 0 {
-				pc = operand
+				depth := 1
+				for depth >= 1 {
+					pc++
+					if program[pc].operator == opJmpZ {
+						depth++
+					} else if program[pc].operator == opJmpNz {
+						depth--
+					}
+				}
 			}
 		case opJmpNz:
 			if data[dataPtr] != 0 {
-				pc = operand
+				depth := 1
+				for depth >= 1 {
+					pc--
+					if program[pc].operator == opJmpNz {
+						depth++
+					} else if program[pc].operator == opJmpZ {
+						depth--
+					}
+				}
 			}
-		case opMove:
-			destPtr := (operand + dataPtr) & dataMask
-			data[destPtr] += data[dataPtr]
-			data[dataPtr] = 0
 		case opNoop:
 			continue
 		default:
