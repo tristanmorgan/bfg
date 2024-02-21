@@ -54,7 +54,7 @@ func main() {
 	outputBuf := bufio.NewWriter(os.Stdout)
 	defer outputBuf.Flush()
 
-	program, err := parser.Compile(sourceBuf)
+	program, err := parser.Tokenise(sourceBuf)
 	if err != nil {
 		fmt.Println("error compiling program: err:", err)
 		os.Exit(1)

@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func TestCompile(t *testing.T) {
+func TestTokenise(t *testing.T) {
 	table := []struct {
 		name    string
 		code    string
@@ -95,7 +95,7 @@ func TestCompile(t *testing.T) {
 
 	for _, v := range table {
 		t.Run(v.name, func(t *testing.T) {
-			got, err := Compile(bufio.NewReader(strings.NewReader(v.code)))
+			got, err := Tokenise(bufio.NewReader(strings.NewReader(v.code)))
 			want := v.program
 
 			if !reflect.DeepEqual(got, want) {
@@ -107,7 +107,7 @@ func TestCompile(t *testing.T) {
 	}
 }
 
-func TestCompileError(t *testing.T) {
+func TestTokeniseError(t *testing.T) {
 	table := []struct {
 		name string
 		code string
@@ -116,18 +116,18 @@ func TestCompileError(t *testing.T) {
 		{
 			"too_many_open",
 			"[[[",
-			errors.New("compilation error: unexpected EOF"),
+			errors.New("tokenisation error: unexpected EOF"),
 		},
 		{
 			"too_many_close",
 			"]]]",
-			errors.New("compilation error: unbalanced braces"),
+			errors.New("tokenisation error: unbalanced braces"),
 		},
 	}
 
 	for _, v := range table {
 		t.Run(v.name, func(t *testing.T) {
-			_, got := Compile(bufio.NewReader(strings.NewReader(v.code)))
+			_, got := Tokenise(bufio.NewReader(strings.NewReader(v.code)))
 			want := v.err
 
 			if !reflect.DeepEqual(got, want) {

@@ -5,8 +5,8 @@ import (
 	"io"
 )
 
-// Compile sourcecode into a program
-func Compile(input io.ByteReader) (program []Instruction, err error) {
+// Tokenise sourcecode into an array of operators
+func Tokenise(input io.ByteReader) (program []Instruction, err error) {
 	var pc, jmpPc int = 0, 0
 	jmpStack := make([]int, 0)
 	program = append(program, Instruction{opNoop, 0})
@@ -16,7 +16,7 @@ func Compile(input io.ByteReader) (program []Instruction, err error) {
 		if err == io.EOF {
 			break
 		} else if err != nil {
-			return nil, errors.New("compilation read error")
+			return nil, errors.New("tokenisation read error")
 		}
 		program = append(program, NewInstruction(chr))
 		switch program[pc].operator {
@@ -39,7 +39,7 @@ func Compile(input io.ByteReader) (program []Instruction, err error) {
 			jmpStack = append(jmpStack, pc)
 		case opJmpNz:
 			if len(jmpStack) == 0 {
-				return nil, errors.New("compilation error: unbalanced braces")
+				return nil, errors.New("tokenisation error: unbalanced braces")
 			}
 			jmpPc = jmpStack[len(jmpStack)-1]
 			jmpStack = jmpStack[:len(jmpStack)-1]
@@ -66,7 +66,7 @@ func Compile(input io.ByteReader) (program []Instruction, err error) {
 		pc++
 	}
 	if len(jmpStack) != 0 {
-		return nil, errors.New("compilation error: unexpected EOF")
+		return nil, errors.New("tokenisation error: unexpected EOF")
 	}
 	return
 }

@@ -27,8 +27,8 @@ func TestExecuteSmall(t *testing.T) {
 	}
 }
 
-func TestCompileExecuteSmall(t *testing.T) {
-	program, _ := Compile(bufio.NewReader(strings.NewReader(
+func TestTokeniseExecuteSmall(t *testing.T) {
+	program, _ := Tokenise(bufio.NewReader(strings.NewReader(
 		`+> >+> >+> >+> >
 >++++++++
 [
