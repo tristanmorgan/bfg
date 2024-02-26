@@ -38,7 +38,7 @@ func (inst Instruction) String() string {
 		"zero",
 		"mov",
 	}
-	return fmt.Sprintf("%s: %v", opName[inst.operator], inst.operand)
+	return fmt.Sprintf("%s:%v", opName[inst.operator], inst.operand)
 }
 
 // NewInstruction created from a sourcecode byte
