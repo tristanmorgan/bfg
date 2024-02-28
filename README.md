@@ -4,7 +4,7 @@
 
 BFG is an optimised [Brainfuck](https://esolangs.org/wiki/Brainfuck) interpreter written in Go.
 
-Uses signed ints for data (platform specific 32/64), memory wraps around at 65535, EOF returns -1.
+Uses signed 8bit ints for data, memory wraps around at 65535, EOF returns -1.
 
 Buffered output flushes on newline, 200 chars or input.
 
