@@ -37,11 +37,11 @@ func TestSameOp(t *testing.T) {
 		opNoop,
 		opAddDp,
 		opAddVal,
+		opSetVal,
 		opOut,
 		opIn,
 		opJmpZ,
 		opJmpNz,
-		opZero,
 		opMove,
 	}
 

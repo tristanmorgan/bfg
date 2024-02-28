@@ -16,11 +16,12 @@ func TestTokenise(t *testing.T) {
 	}{
 		{
 			"small_prog",
-			">>>>>[-]zero+++++[->>+<<]move>>",
+			">>>>>[-]zero+++++>+++++[->>+<<]move>>",
 			[]Instruction{
 				Instruction{opNoop, 0},
 				Instruction{opAddDp, 5},
-				Instruction{opZero, 0},
+				Instruction{opSetVal, 5},
+				Instruction{opAddDp, 1},
 				Instruction{opAddVal, 5},
 				Instruction{opMove, 2},
 				Instruction{opAddDp, 2},

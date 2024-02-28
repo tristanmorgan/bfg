@@ -34,6 +34,14 @@ func Tokenise(input io.ByteReader) (program []Instruction, err error) {
 				program[pc-1].operand += program[pc].operand
 				program = program[:pc]
 				pc--
+			} else if program[pc-1].operator == opSetVal {
+				program[pc-1].operand += program[pc].operand
+				program = program[:pc]
+				pc--
+			} else if program[pc-1].operator == opJmpNz {
+				operand := program[pc].operand
+				program = program[:pc]
+				program = append(program, Instruction{opSetVal, operand})
 			}
 		case opJmpZ:
 			jmpStack = append(jmpStack, pc)
@@ -48,7 +56,7 @@ func Tokenise(input io.ByteReader) (program []Instruction, err error) {
 			if pc-jmpPc == 2 && program[pc-1].operator == opAddVal {
 				pc = jmpPc
 				program = program[:pc]
-				program = append(program, Instruction{opZero, 0})
+				program = append(program, Instruction{opSetVal, 0})
 			} else if pc-jmpPc == 5 &&
 				program[pc-4].Complement(program[pc-2]) &&
 				program[pc-3].Complement(program[pc-1]) {

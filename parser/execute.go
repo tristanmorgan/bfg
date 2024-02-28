@@ -7,20 +7,23 @@ import (
 )
 
 const dataSize int = math.MaxUint16 + 1
+const dataMask int = math.MaxUint16
 
 // Execute a compiled program
-func Execute(program []Instruction, reader io.ByteReader, writer *bufio.Writer) []int16 {
-	data := make([]int16, dataSize)
-	var dataPtr, writeCount int = 0, 0
+func Execute(program []Instruction, reader io.ByteReader, writer *bufio.Writer) []int {
+	data := make([]int, dataSize)
+	var dataPtr, operand, writeCount int = 0, 0, 0
 	for pc := 0; pc < len(program); pc++ {
+		operand = program[pc].operand
 		switch program[pc].operator {
 		case opAddDp:
-			dataPtr += program[pc].operand
-			dataPtr = dataPtr & 0xFFFF
+			dataPtr = (operand + dataPtr) & dataMask
 		case opAddVal:
-			data[dataPtr] += int16(program[pc].operand)
+			data[dataPtr] += operand
+		case opSetVal:
+			data[dataPtr] = operand
 		case opOut:
-			writer.WriteByte(byte(data[dataPtr] & 0xff))
+			writer.WriteByte(byte(data[dataPtr]))
 			writeCount++
 			if data[dataPtr] == 10 || writeCount > 200 {
 				writer.Flush()
@@ -32,24 +35,22 @@ func Execute(program []Instruction, reader io.ByteReader, writer *bufio.Writer) 
 				writeCount = 0
 			}
 			readVal, err := reader.ReadByte()
-			data[dataPtr] = int16(readVal)
+			data[dataPtr] = int(readVal)
 			if err == io.EOF {
-				data[dataPtr] = int16(-1)
+				data[dataPtr] = int(-1)
 			} else if err != nil {
 				break
 			}
 		case opJmpZ:
 			if data[dataPtr] == 0 {
-				pc = program[pc].operand
+				pc = operand
 			}
 		case opJmpNz:
 			if data[dataPtr] != 0 {
-				pc = program[pc].operand
+				pc = operand
 			}
-		case opZero:
-			data[dataPtr] = 0
 		case opMove:
-			destPtr := (program[pc].operand + dataPtr) & 0xFFFF
+			destPtr := (operand + dataPtr) & dataMask
 			data[destPtr] += data[dataPtr]
 			data[dataPtr] = 0
 		case opNoop:

@@ -17,11 +17,11 @@ const (
 	opNoop Opcode = iota
 	opAddDp
 	opAddVal
+	opSetVal
 	opOut
 	opIn
 	opJmpZ
 	opJmpNz
-	opZero
 	opMove
 )
 
@@ -31,11 +31,11 @@ func (inst Instruction) String() string {
 		"nop",
 		"ptr",
 		"add",
+		"set",
 		"out",
 		"in",
 		"jmpz",
 		"jmpnz",
-		"zero",
 		"mov",
 	}
 	return fmt.Sprintf("%s:%v", opName[inst.operator], inst.operand)
