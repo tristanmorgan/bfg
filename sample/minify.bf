@@ -54,6 +54,6 @@ read char until EOF (-1)
   command case: kill flag
   <[-]>]
  >[.[-]] print and kill the copy
- read a new char and subtract exclamation mark
+ read a new char and exit on EOF
  <<,+]
 ++++++++++.
