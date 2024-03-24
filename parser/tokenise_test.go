@@ -44,6 +44,14 @@ func TestTokenise(t *testing.T) {
 			},
 		},
 		{
+			"op_skip",
+			"[>>>>>]",
+			[]Instruction{
+				Instruction{opNoop, 0},
+				Instruction{opSkip, 5},
+			},
+		},
+		{
 			"op_move",
 			"[->>+<<][<<<+>>>-]",
 			[]Instruction{

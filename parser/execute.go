@@ -41,6 +41,10 @@ func Execute(program []Instruction, reader io.ByteReader, writer *bufio.Writer) 
 			} else if err != nil {
 				break
 			}
+		case opSkip:
+			for data[dataPtr] != 0 {
+				dataPtr = (operand + dataPtr) & dataMask
+			}
 		case opJmpZ:
 			if data[dataPtr] == 0 {
 				pc = operand

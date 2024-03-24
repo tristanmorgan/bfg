@@ -43,6 +43,7 @@ func TestSameOp(t *testing.T) {
 		opJmpZ,
 		opJmpNz,
 		opMove,
+		opSkip,
 	}
 
 	for row, rval := range opsList {

@@ -57,6 +57,11 @@ func Tokenise(input io.ByteReader) (program []Instruction, err error) {
 				pc = jmpPc
 				program = program[:pc]
 				program = append(program, Instruction{opSetVal, 0})
+			} else if pc-jmpPc == 2 && program[pc-1].operator == opAddDp {
+				offset := program[pc-1].operand
+				pc = jmpPc
+				program = program[:pc]
+				program = append(program, Instruction{opSkip, offset})
 			} else if pc-jmpPc == 5 &&
 				program[pc-4].Complement(program[pc-2]) &&
 				program[pc-3].Complement(program[pc-1]) {

@@ -29,7 +29,8 @@ func TestExecuteSmall(t *testing.T) {
 
 func TestTokeniseExecuteSmall(t *testing.T) {
 	program, _ := Tokenise(bufio.NewReader(strings.NewReader(
-		`+> >+> >+> >+> >
+		`>>>>>>>>>>
+<+< <+< <+< <+ [>>]
 >++++++++
 [
   <
@@ -40,7 +41,7 @@ func TestTokeniseExecuteSmall(t *testing.T) {
 	outputBuf := bufio.NewWriter(os.Stdout)
 	inputBuf := bufio.NewReader(strings.NewReader("no input."))
 	data := Execute(program, inputBuf, outputBuf)[:10]
-	want := []int{170, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	want := []int{0, 0, 0, 170, 0, 0, 0, 0, 0, 0}
 
 	if !reflect.DeepEqual(data, want) {
 		t.Errorf("got %v want %v", data, want)
