@@ -18,28 +18,29 @@ func Tokenise(input io.ByteReader) (program []Instruction, err error) {
 		} else if err != nil {
 			return nil, errors.New("tokenisation read error")
 		}
-		program = append(program, NewInstruction(chr))
-		switch program[pc].operator {
+		instruction := NewInstruction(chr)
+		program = append(program, instruction)
+		switch instruction.operator {
 		case opNoop:
 			program = program[:pc]
 			pc--
 		case opAddDp:
-			if program[pc-1].SameOp(program[pc]) {
-				program[pc-1].operand += program[pc].operand
+			if program[pc-1].SameOp(instruction) {
+				program[pc-1].operand += instruction.operand
 				program = program[:pc]
 				pc--
 			}
 		case opAddVal:
-			if program[pc-1].SameOp(program[pc]) {
-				program[pc-1].operand += program[pc].operand
+			if program[pc-1].SameOp(instruction) {
+				program[pc-1].operand += instruction.operand
 				program = program[:pc]
 				pc--
 			} else if program[pc-1].operator == opSetVal {
-				program[pc-1].operand += program[pc].operand
+				program[pc-1].operand += instruction.operand
 				program = program[:pc]
 				pc--
 			} else if program[pc-1].operator == opJmpNz {
-				operand := program[pc].operand
+				operand := instruction.operand
 				program = program[:pc]
 				program = append(program, Instruction{opSetVal, operand})
 			}
