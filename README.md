@@ -6,6 +6,8 @@ BFG is an optimised [Brainfuck](https://esolangs.org/wiki/Brainfuck) interpreter
 
 Uses signed ints for data (platform specific 32/64), memory wraps around at 65535, EOF returns -1.
 
+Optionally uses 8 bit data cells.
+
 Buffered output flushes on newline, 200 chars or input.
 
 ## Optimisations
@@ -25,9 +27,11 @@ for performance comparison see no_optimisation branch.
 ## Usage
 
     Usage:
-      bf [option] source.bf [input]
+      cmd/bfg/bfg_darwin_arm64_eights [option] source.bf [input]
     
     Options:
+      -eight
+    	    eight bit execution
       -version
     	    display version
 
