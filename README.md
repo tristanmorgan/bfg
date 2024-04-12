@@ -27,7 +27,7 @@ for performance comparison see no_optimisation branch.
 ## Usage
 
     Usage:
-      cmd/bfg/bfg_darwin_arm64_eights [option] source.bf [input]
+      bf [option] source.bf [input]
     
     Options:
       -eight
@@ -37,6 +37,7 @@ for performance comparison see no_optimisation branch.
 
 May use - as source to read program from STDIN and output is STDOUT
 
+    #!/usr/bin/env bf
     +++++++++[>++++++++>++++++++++++>++++>++++++++++++>+++++++++++>+<<<<<<-]>---.>++
     .----.+++++.++++++++++.>----.<-----.>>----.+.<<-.>.<<---.>-.>>>--.<.+++++.<<<+++
     +.>+++.>>>++.<---.<+.>>>+.
