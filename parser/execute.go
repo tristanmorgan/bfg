@@ -6,22 +6,29 @@ import (
 	"math"
 )
 
-const dataSize int = math.MaxUint16 + 1
-const dataMask int = math.MaxUint16
+// DataSize is the size of the input data
+const DataSize int = math.MaxUint16 + 1
+
+// DataMask is the mask to match the size
+const DataMask int = math.MaxUint16
+
+// Number interface defines different types that can be used in execution
+type Number interface {
+	byte | int | int8 | int16 | int32 | int64
+}
 
 // Execute a compiled program
-func Execute(program []Instruction, reader io.ByteReader, writer *bufio.Writer) []int {
-	data := make([]int, dataSize)
+func Execute[T Number](data []T, program []Instruction, reader io.ByteReader, writer *bufio.Writer) []T {
 	var dataPtr, operand, writeCount int = 0, 0, 0
 	for pc := 0; pc < len(program); pc++ {
 		operand = program[pc].operand
 		switch program[pc].operator {
 		case opAddDp:
-			dataPtr = (operand + dataPtr) & dataMask
+			dataPtr = (operand + dataPtr) & DataMask
 		case opAddVal:
-			data[dataPtr] += operand
+			data[dataPtr] += T(operand)
 		case opSetVal:
-			data[dataPtr] = operand
+			data[dataPtr] = T(operand)
 		case opOut:
 			writer.WriteByte(byte(data[dataPtr]))
 			writeCount++
@@ -35,15 +42,16 @@ func Execute(program []Instruction, reader io.ByteReader, writer *bufio.Writer) 
 				writeCount = 0
 			}
 			readVal, err := reader.ReadByte()
-			data[dataPtr] = int(readVal)
+			data[dataPtr] = T(readVal)
 			if err == io.EOF {
-				data[dataPtr] = int(-1)
+				data[dataPtr] = T(0)
+				data[dataPtr]--
 			} else if err != nil {
 				break
 			}
 		case opSkip:
 			for data[dataPtr] != 0 {
-				dataPtr = (operand + dataPtr) & dataMask
+				dataPtr = (operand + dataPtr) & DataMask
 			}
 		case opJmpZ:
 			if data[dataPtr] == 0 {
@@ -54,7 +62,7 @@ func Execute(program []Instruction, reader io.ByteReader, writer *bufio.Writer) 
 				pc = operand
 			}
 		case opMove:
-			destPtr := (operand + dataPtr) & dataMask
+			destPtr := (operand + dataPtr) & DataMask
 			data[destPtr] += data[dataPtr]
 			data[dataPtr] = 0
 		case opNoop:

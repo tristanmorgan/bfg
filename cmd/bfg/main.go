@@ -49,9 +49,11 @@ func main() {
 		os.Exit(1)
 	}
 	if *eight {
-		parser.ExecuteEight(program, inputBuf, outputBuf)
+		data := make([]byte, parser.DataSize)
+		parser.Execute(data, program, inputBuf, outputBuf)
 	} else {
-		parser.Execute(program, inputBuf, outputBuf)
+		data := make([]int, parser.DataSize)
+		parser.Execute(data, program, inputBuf, outputBuf)
 	}
 }
 

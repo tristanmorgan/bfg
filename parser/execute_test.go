@@ -17,9 +17,10 @@ func TestExecuteSmall(t *testing.T) {
 		Instruction{opMove, 2},
 		Instruction{opAddDp, 2},
 	}
+	startdata := make([]int, 65536)
 	outputBuf := bufio.NewWriter(os.Stdout)
 	inputBuf := bufio.NewReader(strings.NewReader("no input."))
-	data := Execute(program, inputBuf, outputBuf)[:10]
+	data := Execute(startdata, program, inputBuf, outputBuf)[:10]
 	want := []int{0, 0, 0, 0, 0, 0, 0, 5, 0, 0}
 
 	if !reflect.DeepEqual(data, want) {
@@ -38,9 +39,10 @@ func TestTokeniseExecuteSmall(t *testing.T) {
   [<++>-]  double the result
   >[<+>-]< and move the bit counter
 -]`)))
+	startdata := make([]int, 65536)
 	outputBuf := bufio.NewWriter(os.Stdout)
 	inputBuf := bufio.NewReader(strings.NewReader("no input."))
-	data := Execute(program, inputBuf, outputBuf)[:10]
+	data := Execute(startdata, program, inputBuf, outputBuf)[:10]
 	want := []int{0, 0, 0, 170, 0, 0, 0, 0, 0, 0}
 
 	if !reflect.DeepEqual(data, want) {
