@@ -7,7 +7,7 @@ import (
 
 // Tokenise sourcecode into an array of operators
 func Tokenise(input io.ByteReader) (program []Instruction, err error) {
-	var pc, jmpPc int = 0, 0
+	var pc int = 0
 	jmpStack := make([]int, 0)
 	program = append(program, Instruction{opNoop, 0})
 	pc++
@@ -47,7 +47,7 @@ func Tokenise(input io.ByteReader) (program []Instruction, err error) {
 			if len(jmpStack) == 0 {
 				return nil, errors.New("tokenisation error: unbalanced braces")
 			}
-			jmpPc = jmpStack[len(jmpStack)-1]
+			jmpPc := jmpStack[len(jmpStack)-1]
 			jmpStack = jmpStack[:len(jmpStack)-1]
 			program[pc].operand = jmpPc
 			program[jmpPc].operand = pc

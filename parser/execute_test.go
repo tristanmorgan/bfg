@@ -10,12 +10,12 @@ import (
 
 func TestExecuteSmall(t *testing.T) {
 	program := []Instruction{
-		Instruction{opNoop, 0},
-		Instruction{opAddDp, 5},
-		Instruction{opSetVal, 0},
-		Instruction{opAddVal, 5},
-		Instruction{opMove, 2},
-		Instruction{opAddDp, 2},
+		{opNoop, 0},
+		{opAddDp, 5},
+		{opSetVal, 0},
+		{opAddVal, 5},
+		{opMove, 2},
+		{opAddDp, 2},
 	}
 	startdata := make([]int, 65536)
 	outputBuf := bufio.NewWriter(os.Stdout)
