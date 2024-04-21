@@ -1,6 +1,8 @@
 ## B.F.G.
 
-[![Go](https://github.com/tristanmorgan/bfg/actions/workflows/go-test-build.yml/badge.svg)](https://github.com/tristanmorgan/bfg/actions/workflows/go-test-build.yml)
+* [![license MIT](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
+* [![GoReportCard](https://goreportcard.com/badge/github.com/tristanmorgan/bfg)](https://goreportcard.com/report/github.com/tristanmorgan/bfg)
+* [![Go](https://github.com/tristanmorgan/bfg/actions/workflows/go-test-build.yml/badge.svg)](https://github.com/tristanmorgan/bfg/actions/workflows/go-test-build.yml)
 
 BFG is an optimised [Brainfuck](https://esolangs.org/wiki/Brainfuck) interpreter written in Go.
 
