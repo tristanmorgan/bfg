@@ -24,6 +24,7 @@ const (
 	opJmpNz
 	opMove
 	opSkip
+	opMulVal
 )
 
 // String representation of Instruction
@@ -39,6 +40,7 @@ func (inst Instruction) String() string {
 		"jnz",
 		"mov",
 		"skp",
+		"mul",
 	}
 	return fmt.Sprintf("%s: %v", opName[inst.operator], inst.operand)
 }

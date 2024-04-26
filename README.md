@@ -23,6 +23,7 @@ Operates with a instruction parse then execute pattern.
  * repeat >>> or <<< are replaced with a single pointer jump
  * [>>>] and [<<<] are merged into a skip instruction.
  * [>>+<<-] and [->>+<<] merged into a move instruction.
+ * [<+++++>-] is converted to a Multiply instruction.
 
 for performance comparison see no_optimisation branch.
 
@@ -33,7 +34,7 @@ for performance comparison see no_optimisation branch.
     
     Options:
       -dump
-            dump parsed program
+    	    dump parsed program
       -eight
     	    eight bit execution
       -version

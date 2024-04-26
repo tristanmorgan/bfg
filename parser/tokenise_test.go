@@ -28,6 +28,15 @@ func TestTokenise(t *testing.T) {
 			},
 		},
 		{
+			"op_mul",
+			" [<++++++>-]",
+			[]Instruction{
+				Instruction{opNoop, 0},
+				Instruction{opMulVal, -1}, // dest value pointer
+				Instruction{opNoop, 6},    // multiplication factor
+			},
+		},
+		{
 			"op_dp",
 			">>>>>>><<<<<<>",
 			[]Instruction{

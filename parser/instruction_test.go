@@ -44,6 +44,7 @@ func TestSameOp(t *testing.T) {
 		opJmpNz,
 		opMove,
 		opSkip,
+		opMulVal,
 	}
 
 	for row, rval := range opsList {
@@ -83,5 +84,4 @@ func TestComplement(t *testing.T) {
 			})
 		}
 	}
-
 }

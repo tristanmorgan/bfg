@@ -36,7 +36,7 @@ func Tokenise(input io.ByteReader) (program []Instruction, err error) {
 				program[pc-1].operand += instruction.operand
 				program = program[:pc]
 				pc--
-			} else if program[pc-1].operator == opJmpNz {
+			} else if program[pc-1].SameOp(NewInstruction(']')) {
 				operand := instruction.operand
 				program = program[:pc]
 				program = append(program, Instruction{opSetVal, operand})
@@ -51,25 +51,37 @@ func Tokenise(input io.ByteReader) (program []Instruction, err error) {
 			jmpStack = jmpStack[:len(jmpStack)-1]
 			program[pc].operand = jmpPc
 			program[jmpPc].operand = pc
-			if pc-jmpPc == 2 && program[pc-1].operator == opAddVal {
+			if pc-jmpPc == 2 && program[pc-1].SameOp(NewInstruction('+')) {
 				pc = jmpPc
 				program = program[:pc]
 				program = append(program, Instruction{opSetVal, 0})
-			} else if pc-jmpPc == 2 && program[pc-1].operator == opAddDp {
+			} else if pc-jmpPc == 2 && program[pc-1].SameOp(NewInstruction('>')) {
 				offset := program[pc-1].operand
 				pc = jmpPc
 				program = program[:pc]
 				program = append(program, Instruction{opSkip, offset})
-			} else if pc-jmpPc == 5 &&
+			} else if pc-jmpPc == 5 && // [<<<+>>>-] or [-<<<+>>>]
 				program[pc-4].Complement(program[pc-2]) &&
 				program[pc-3].Complement(program[pc-1]) {
 				offset := program[pc-4].operand
-				if program[pc-3].operator == opAddDp {
+				if program[pc-3].SameOp(NewInstruction('>')) {
 					offset = program[pc-3].operand
 				}
 				pc = jmpPc
 				program = program[:pc]
 				program = append(program, Instruction{opMove, offset})
+			} else if pc-jmpPc == 5 && // [<<++++>>-]
+				program[pc-4].Complement(program[pc-2]) &&
+				program[pc-3].SameOp(NewInstruction('+')) &&
+				program[pc-1].SameOp(NewInstruction('-')) &&
+				program[pc-1].operand == -1 {
+				offset := program[pc-4].operand
+				factor := program[pc-3].operand
+				pc = jmpPc
+				program = program[:pc]
+				program = append(program, Instruction{opMulVal, offset})
+				pc++
+				program = append(program, Instruction{opNoop, factor})
 			}
 		}
 		pc++
