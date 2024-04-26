@@ -14,6 +14,7 @@ import (
 func main() {
 	version := flag.Bool("version", false, "display version")
 	eight := flag.Bool("eight", false, "eight bit execution")
+	dump := flag.Bool("dump", false, "dump parsed program")
 
 	flag.Usage = func() {
 		fmt.Printf("Usage:\n  %s [option] source.bf [input]\n", os.Args[0])
@@ -48,7 +49,9 @@ func main() {
 		fmt.Println("error compiling program: err:", err)
 		os.Exit(1)
 	}
-	if *eight {
+	if *dump {
+		parser.Dump(program, outputBuf)
+	} else if *eight {
 		data := make([]byte, parser.DataSize)
 		parser.Execute(data, program, inputBuf, outputBuf)
 	} else {

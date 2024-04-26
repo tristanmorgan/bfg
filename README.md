@@ -32,6 +32,8 @@ for performance comparison see no_optimisation branch.
       bf [option] source.bf [input]
     
     Options:
+      -dump
+            dump parsed program
       -eight
     	    eight bit execution
       -version

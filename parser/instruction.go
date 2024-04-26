@@ -34,13 +34,13 @@ func (inst Instruction) String() string {
 		"add",
 		"set",
 		"out",
-		"in",
-		"jmpz",
-		"jmpnz",
+		"inp",
+		"jmp",
+		"jnz",
 		"mov",
-		"skip",
+		"skp",
 	}
-	return fmt.Sprintf("%s:%v", opName[inst.operator], inst.operand)
+	return fmt.Sprintf("%s: %v", opName[inst.operator], inst.operand)
 }
 
 // NewInstruction created from a sourcecode byte
