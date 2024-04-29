@@ -73,8 +73,7 @@ func Tokenise(input io.ByteReader) (program []Instruction, err error) {
 			} else if pc-jmpPc == 5 && // [<<++++>>-]
 				program[pc-4].Complement(program[pc-2]) &&
 				program[pc-3].SameOp(NewInstruction('+')) &&
-				program[pc-1].SameOp(NewInstruction('-')) &&
-				program[pc-1].operand == -1 {
+				program[pc-1].Complement(NewInstruction('+')) {
 				offset := program[pc-4].operand
 				factor := program[pc-3].operand
 				pc = jmpPc
