@@ -16,7 +16,7 @@ func TestTokenise(t *testing.T) {
 	}{
 		{
 			"small_prog",
-			">>>>>[-]zero+++++>+++++[->>+<<]move>>",
+			">>>>>[-]zero+++++>+++++[->>+<<]move>>[>>+<<-]move",
 			[]Instruction{
 				{opNoop, 0},
 				{opAddDp, 5},
@@ -25,15 +25,19 @@ func TestTokenise(t *testing.T) {
 				{opAddVal, 5},
 				{opMove, 2},
 				{opAddDp, 2},
+				{opMove, 2},
 			},
 		},
 		{
 			"op_mul",
-			" [<++++++>-]",
+			" [<++++++>-]>[->>---<<]",
 			[]Instruction{
-				Instruction{opNoop, 0},
-				Instruction{opMulVal, -1}, // dest value pointer
-				Instruction{opNoop, 6},    // multiplication factor
+				{opNoop, 0},
+				{opMulVal, -1}, // dest value pointer
+				{opNoop, 6},    // multiplication factor
+				{opAddDp, 1},
+				{opMulVal, 2}, // dest value pointer
+				{opNoop, -3},  // multiplication factor
 			},
 		},
 		{

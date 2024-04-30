@@ -60,27 +60,34 @@ func Tokenise(input io.ByteReader) (program []Instruction, err error) {
 				pc = jmpPc
 				program = program[:pc]
 				program = append(program, Instruction{opSkip, offset})
-			} else if pc-jmpPc == 5 && // [<<<+>>>-] or [-<<<+>>>]
-				program[pc-4].Complement(program[pc-2]) &&
-				program[pc-3].Complement(program[pc-1]) {
-				offset := program[pc-4].operand
-				if program[pc-3].SameOp(NewInstruction('>')) {
+			} else if pc-jmpPc == 5 { // looking for opMulVal and opMove
+				var factor, offset = 0, 0
+				if program[pc-4].Complement(NewInstruction('+')) &&
+					program[pc-3].Complement(program[pc-1]) &&
+					program[pc-2].SameOp(NewInstruction('+')) { // open with minus
+
+					factor = program[pc-2].operand
 					offset = program[pc-3].operand
+
+				} else if program[pc-1].Complement(NewInstruction('+')) &&
+					program[pc-4].Complement(program[pc-2]) &&
+					program[pc-3].SameOp(NewInstruction('+')) { // close with minus
+
+					factor = program[pc-3].operand
+					offset = program[pc-4].operand
+
 				}
-				pc = jmpPc
-				program = program[:pc]
-				program = append(program, Instruction{opMove, offset})
-			} else if pc-jmpPc == 5 && // [<<++++>>-]
-				program[pc-4].Complement(program[pc-2]) &&
-				program[pc-3].SameOp(NewInstruction('+')) &&
-				program[pc-1].Complement(NewInstruction('+')) {
-				offset := program[pc-4].operand
-				factor := program[pc-3].operand
-				pc = jmpPc
-				program = program[:pc]
-				program = append(program, Instruction{opMulVal, offset})
-				pc++
-				program = append(program, Instruction{opNoop, factor})
+				if factor == 1 {
+					pc = jmpPc
+					program = program[:pc]
+					program = append(program, Instruction{opMove, offset})
+				} else if factor != 0 {
+					pc = jmpPc
+					program = program[:pc]
+					program = append(program, Instruction{opMulVal, offset})
+					pc++
+					program = append(program, Instruction{opNoop, factor})
+				}
 			}
 		}
 		pc++
