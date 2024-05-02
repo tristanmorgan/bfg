@@ -11,6 +11,16 @@ import (
 	"github.com/tristanmorgan/bfg/parser"
 )
 
+var (
+	// Version is the main version number that is being run at the moment.
+	Version = "0.0.1"
+
+	// VersionPrerelease is A pre-release marker for the Version. If this is ""
+	// (empty string) then it means that it is a final release. Otherwise, this
+	// is a pre-release such as "-dev" (in development), -"beta", "-rc1", etc.
+	VersionPrerelease = "-dev"
+)
+
 func main() {
 	version := flag.Bool("version", false, "display version")
 	eight := flag.Bool("eight", false, "eight bit execution")
@@ -24,7 +34,7 @@ func main() {
 
 	flag.Parse()
 	if *version {
-		fmt.Println("Version 0.0.1")
+		fmt.Printf("Version: v%s%s\n", Version, VersionPrerelease)
 		os.Exit(0)
 	}
 
