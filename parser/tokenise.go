@@ -57,6 +57,9 @@ func Tokenise(input io.ByteReader) (program []Instruction, err error) {
 				pc--
 			} else if pc-jmpPc == 2 && program[pc-1].SameOp(NewInstruction('+')) {
 				pc = jmpPc
+				if program[jmpPc-1].SameOp(NewInstruction('+')) {
+					pc--
+				}
 				program = program[:pc]
 				program = append(program, Instruction{opSetVal, 0})
 			} else if pc-jmpPc == 2 && program[pc-1].SameOp(NewInstruction('>')) {

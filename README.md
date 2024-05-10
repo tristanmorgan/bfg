@@ -38,6 +38,8 @@ for performance comparison see no_optimisation branch.
     	    dump parsed program
       -eight
     	    eight bit execution
+      -print
+    	    pretty print parsed program
       -version
     	    display version
 

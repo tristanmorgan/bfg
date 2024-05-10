@@ -16,7 +16,7 @@ func TestTokenise(t *testing.T) {
 	}{
 		{
 			"small_prog",
-			">>>>>[-]zero+++++>+++++[->>+<<]move>>[>>+<<-]move",
+			">>>>>++[-]zero+++++>+++++[->>+<<]move>>[>>+<<-]move",
 			[]Instruction{
 				{opNoop, 0},
 				{opAddDp, 5},

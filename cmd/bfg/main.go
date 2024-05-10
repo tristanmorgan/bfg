@@ -25,6 +25,7 @@ func main() {
 	version := flag.Bool("version", false, "display version")
 	eight := flag.Bool("eight", false, "eight bit execution")
 	dump := flag.Bool("dump", false, "dump parsed program")
+	print := flag.Bool("print", false, "pretty print parsed program")
 
 	flag.Usage = func() {
 		fmt.Printf("Usage:\n  %s [option] source.bf [input]\n", os.Args[0])
@@ -35,6 +36,7 @@ func main() {
 	flag.Parse()
 	if *version {
 		fmt.Printf("Version: v%s%s\n", Version, VersionPrerelease)
+		fmt.Println("https://github.com/tristanmorgan/bfg")
 		os.Exit(0)
 	}
 
@@ -61,6 +63,8 @@ func main() {
 	}
 	if *dump {
 		parser.Dump(program, outputBuf)
+	} else if *print {
+		parser.Print(program, outputBuf)
 	} else if *eight {
 		data := make([]byte, parser.DataSize)
 		parser.Execute(data, program, inputBuf, outputBuf)
