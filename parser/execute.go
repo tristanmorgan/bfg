@@ -21,14 +21,11 @@ type Number interface {
 func Execute[T Number](data []T, program []Instruction, reader io.ByteReader, writer *bufio.Writer) []T {
 	var dataPtr, writeCount int = 0, 0
 	for pc := 0; pc < len(program); pc++ {
-		operand := program[pc].operand
 		switch program[pc].operator {
 		case opAddDp:
-			dataPtr = (operand + dataPtr) & DataMask
+			dataPtr = (program[pc].operand + dataPtr) & DataMask
 		case opAddVal:
-			data[dataPtr] += T(operand)
-		case opSetVal:
-			data[dataPtr] = T(operand)
+			data[dataPtr] += T(program[pc].operand)
 		case opOut:
 			writer.WriteByte(byte(data[dataPtr]))
 			writeCount++
@@ -49,35 +46,30 @@ func Execute[T Number](data []T, program []Instruction, reader io.ByteReader, wr
 			} else if err != nil {
 				break
 			}
-		case opSkip:
-			for data[dataPtr] != 0 {
-				dataPtr = (operand + dataPtr) & DataMask
-			}
 		case opJmpZ:
 			if data[dataPtr] == 0 {
-				pc = operand
+				depth := 1
+				for depth >= 1 {
+					pc++
+					if program[pc].operator == opJmpZ {
+						depth++
+					} else if program[pc].operator == opJmpNz {
+						depth--
+					}
+				}
 			}
 		case opJmpNz:
 			if data[dataPtr] != 0 {
-				pc = operand
+				depth := 1
+				for depth >= 1 {
+					pc--
+					if program[pc].operator == opJmpNz {
+						depth++
+					} else if program[pc].operator == opJmpZ {
+						depth--
+					}
+				}
 			}
-		case opMove:
-			destPtr := (operand + dataPtr) & DataMask
-			data[destPtr] += data[dataPtr]
-			data[dataPtr] = 0
-		case opMulVal:
-			destPtr := (operand + dataPtr) & DataMask
-			factor := program[pc+1].operand
-			data[destPtr] += data[dataPtr] * T(factor)
-			data[dataPtr] = 0
-			pc++
-		case opDupVal:
-			firstPtr := (operand + dataPtr) & DataMask
-			secondPtr := (program[pc+1].operand + dataPtr) & DataMask
-			data[firstPtr] += data[dataPtr]
-			data[secondPtr] += data[dataPtr]
-			data[dataPtr] = 0
-			pc++
 		case opNoop:
 			continue
 		default:

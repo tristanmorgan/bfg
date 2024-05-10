@@ -13,15 +13,10 @@ const (
 	opNoop Opcode = iota
 	opAddDp
 	opAddVal
-	opSetVal
 	opOut
 	opIn
 	opJmpZ
 	opJmpNz
-	opMove
-	opSkip
-	opMulVal
-	opDupVal
 )
 
 var instMap = map[byte]Instruction{
@@ -43,18 +38,4 @@ func NewInstruction(chr byte) Instruction {
 // SameOp compares Instructions operator but not operand
 func (inst Instruction) SameOp(instTwo Instruction) bool {
 	return inst.operator == instTwo.operator
-}
-
-// Complement compares Instructions operator and operand
-func (inst Instruction) Complement(instTwo Instruction) bool {
-	return inst.SameOp(instTwo) && inst.operand+instTwo.operand == 0
-}
-
-// IsZeroOp returns true for ops that have left the pointer on a zero
-func (inst Instruction) IsZeroOp() bool {
-	return inst.operator == opJmpNz ||
-		inst.operator == opNoop ||
-		inst.operator == opMove ||
-		inst.operator == opSkip ||
-		(inst.operator == opSetVal && inst.operand == 0)
 }

@@ -20,18 +20,12 @@ func repeatDirection(neg, pos string, vect int) string {
 	return strings.Repeat(neg, abs(vect))
 }
 
-func instPrint(inst, lastInst Instruction) string {
+func instPrint(inst Instruction) string {
 	switch inst.operator {
 	case opAddDp:
 		return repeatDirection("<", ">", inst.operand)
 	case opAddVal:
 		return repeatDirection("-", "+", inst.operand)
-	case opSetVal:
-		prefix := "[-]"
-		if lastInst.IsZeroOp() && inst.operand != 0 {
-			prefix = ""
-		}
-		return prefix + repeatDirection("-", "+", inst.operand)
 	case opOut:
 		return "."
 	case opIn:
@@ -40,22 +34,6 @@ func instPrint(inst, lastInst Instruction) string {
 		return "["
 	case opJmpNz:
 		return "]"
-	case opMove:
-		return "[-" + repeatDirection("<", ">", inst.operand) + "+" + repeatDirection(">", "<", inst.operand) + "]"
-	case opSkip:
-		return "[" + repeatDirection("<", ">", inst.operand) + "]"
-	case opMulVal:
-		return ""
-	case opDupVal:
-		return ""
-	case opNoop:
-		if lastInst.operator == opMulVal {
-			multiplier := repeatDirection("-", "+", inst.operand)
-			return "[-" + repeatDirection("<", ">", lastInst.operand) + multiplier + repeatDirection(">", "<", lastInst.operand) + "]"
-		} else if lastInst.operator == opDupVal {
-			return "[-" + repeatDirection("<", ">", lastInst.operand) + "+" + repeatDirection("<", ">", inst.operand-lastInst.operand) + "+" + repeatDirection(">", "<", inst.operand) + "]"
-		}
-		return ""
 	default:
 		return ""
 	}
@@ -66,21 +44,17 @@ func Print(program []Instruction, writer *bufio.Writer) {
 	depth := 0
 	startLoop := NewInstruction('[')
 	endLoop := NewInstruction(']')
-	lastInst := NewInstruction('!')
 	for _, inst := range program {
-		if inst.operator == opMulVal ||
-			inst.operator == opDupVal {
-			lastInst = inst
+		if inst.operator == opNoop {
 			continue
 		}
 		if inst.SameOp(endLoop) {
 			depth--
 		}
-		fmt.Fprintln(writer, strings.Repeat("\t", depth), instPrint(inst, lastInst))
+		fmt.Fprintln(writer, strings.Repeat("\t", depth), instPrint(inst))
 		if inst.SameOp(startLoop) {
 			depth++
 		}
-		lastInst = inst
 	}
 	writer.Flush()
 }

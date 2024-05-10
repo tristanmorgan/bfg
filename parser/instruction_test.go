@@ -10,15 +10,10 @@ var opName = map[Opcode]string{
 	opNoop:   "nop",
 	opAddDp:  "ptr",
 	opAddVal: "add",
-	opSetVal: "set",
 	opOut:    "out",
 	opIn:     "inp",
 	opJmpZ:   "jmp",
 	opJmpNz:  "jnz",
-	opMove:   "mov",
-	opSkip:   "skp",
-	opMulVal: "mul",
-	opDupVal: "dup",
 }
 
 func (inst Instruction) String() string {
@@ -51,52 +46,15 @@ func TestNewInstruction(t *testing.T) {
 	}
 }
 
-func TestIsZeroOp(t *testing.T) {
-	program := []Instruction{
-		{opNoop, 0},
-		{opAddDp, 1},
-		{opAddVal, 1},
-		{opSetVal, -1},
-		{opSetVal, 0},
-		{opOut, 1},
-		{opSkip, 1},
-		{opIn, 1},
-		{opJmpZ, 0},
-		{opJmpNz, 0},
-	}
-	want := []bool{
-		true,
-		false,
-		false,
-		false,
-		true,
-		false,
-		true,
-		false,
-		false,
-		true,
-	}
-
-	for idx, val := range program {
-		if want[idx] != val.IsZeroOp() {
-			t.Errorf("testing %v got %v want %v", val, val.IsZeroOp(), want[idx])
-		}
-	}
-}
 func TestSameOp(t *testing.T) {
 	opsList := []Opcode{
 		opNoop,
 		opAddDp,
 		opAddVal,
-		opSetVal,
 		opOut,
 		opIn,
 		opJmpZ,
 		opJmpNz,
-		opMove,
-		opSkip,
-		opMulVal,
-		opDupVal,
 	}
 
 	for row, rval := range opsList {
@@ -113,27 +71,4 @@ func TestSameOp(t *testing.T) {
 		})
 	}
 
-}
-
-func TestComplement(t *testing.T) {
-	opsList := []Opcode{
-		opAddDp,
-		opAddVal,
-	}
-
-	for row, rval := range opsList {
-		for col, cval := range opsList {
-			t.Run(fmt.Sprintf("%s-%s", opName[rval], opName[cval]), func(t *testing.T) {
-				for operand := range [6]int{} {
-					rinst := Instruction{rval, operand}
-					cinst := Instruction{cval, operand - 6}
-					want := row == col && operand == 3
-
-					if rinst.Complement(cinst) != want {
-						t.Errorf("testing %v vs %v want %v", rinst, cinst, want)
-					}
-				}
-			})
-		}
-	}
 }
