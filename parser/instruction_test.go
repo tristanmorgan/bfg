@@ -11,16 +11,10 @@ var opName = map[Opcode]string{
 	opNoop:   "nop",
 	opAddDp:  "ptr",
 	opAddVal: "add",
-	opSetVal: "set",
 	opOut:    "out",
 	opIn:     "inp",
 	opJmpZ:   "jmp",
 	opJmpNz:  "jnz",
-	opMove:   "mov",
-	opMovN:   "nmv",
-	opSkip:   "skp",
-	opMulVal: "mul",
-	opDupVal: "dup",
 }
 
 func (inst Instruction) String() string {
@@ -68,61 +62,15 @@ func TestNewInstruction(t *testing.T) {
 	}
 }
 
-func TestIsZeroOp(t *testing.T) {
-	program := []Instruction{
-		{opNoop, 0},
-		{opAddDp, 1},
-		{opAddVal, 1},
-		{opSetVal, 0},
-		{opSetVal, 1},
-		{opOut, 1},
-		{opIn, 1},
-		{opJmpZ, 0},
-		{opJmpNz, 0},
-		{opMove, 1},
-		{opSkip, 1},
-		{opMovN, 1},
-		{opMulVal, 1},
-		{opDupVal, 1},
-	}
-	want := []bool{
-		true,
-		false,
-		false,
-		true,
-		false,
-		false,
-		false,
-		false,
-		true,
-		true,
-		true,
-		true,
-		true,
-		true,
-	}
-
-	for idx, val := range program {
-		if want[idx] != val.IsZeroOp() {
-			t.Errorf("testing %v got %v want %v", val, val.IsZeroOp(), want[idx])
-		}
-	}
-}
 func TestSameOp(t *testing.T) {
 	opsList := []Opcode{
 		opNoop,
 		opAddDp,
 		opAddVal,
-		opSetVal,
 		opOut,
 		opIn,
 		opJmpZ,
 		opJmpNz,
-		opMove,
-		opMovN,
-		opSkip,
-		opMulVal,
-		opDupVal,
 	}
 
 	for row, rval := range opsList {
