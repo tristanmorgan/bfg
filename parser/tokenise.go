@@ -36,7 +36,9 @@ func Tokenise(input io.ByteReader) (program []Instruction, err error) {
 				program[pc-1].operand += instruction.operand
 				program = program[:pc]
 				pc--
-			} else if program[pc-1].SameOp(NewInstruction(']')) {
+			} else if program[pc-1].SameOp(NewInstruction(']')) ||
+				program[pc-1].operator == opMove ||
+				program[pc-1].operator == opNoop {
 				operand := instruction.operand
 				program = program[:pc]
 				program = append(program, Instruction{opSetVal, operand})

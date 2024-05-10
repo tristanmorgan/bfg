@@ -33,7 +33,7 @@ func TestTokenise(t *testing.T) {
 			"+[<++++++>-]>[->>---<<]",
 			[]Instruction{
 				{opNoop, 0},
-				{opAddVal, 1},
+				{opSetVal, 1},
 				{opMulVal, -1}, // dest value pointer
 				{opNoop, 6},    // multiplication factor
 				{opAddDp, 1},
@@ -51,10 +51,12 @@ func TestTokenise(t *testing.T) {
 		},
 		{
 			"op_val",
-			"----++----++",
+			"----++->---++",
 			[]Instruction{
 				{opNoop, 0},
-				{opAddVal, -4},
+				{opSetVal, -3},
+				{opAddDp, 1},
+				{opAddVal, -1},
 			},
 		},
 		{
@@ -68,13 +70,14 @@ func TestTokenise(t *testing.T) {
 		},
 		{
 			"op_move",
-			">[->>+<<]>[<<<+>>>-]",
+			">[->>+<<]>[<<<+>>>-]++",
 			[]Instruction{
 				{opNoop, 0},
 				{opAddDp, 1},
 				{opMove, 2},
 				{opAddDp, 1},
 				{opMove, -3},
+				{opSetVal, 2},
 			},
 		},
 		{
