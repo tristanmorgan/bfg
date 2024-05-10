@@ -32,6 +32,36 @@ func TestNewInstruction(t *testing.T) {
 	}
 }
 
+func TestIsZeroOp(t *testing.T) {
+	program := []Instruction{
+		{opNoop, 0},
+		{opAddDp, 1},
+		{opAddVal, 1},
+		{opSetVal, -1},
+		{opSetVal, 0},
+		{opOut, 1},
+		{opIn, 1},
+		{opJmpZ, 0},
+		{opJmpNz, 0},
+	}
+	want := []bool{
+		true,
+		false,
+		false,
+		false,
+		true,
+		false,
+		false,
+		false,
+		true,
+	}
+
+	for idx, val := range program {
+		if want[idx] != val.IsZeroOp() {
+			t.Errorf("testing %v got %v want %v", val, val.IsZeroOp(), want[idx])
+		}
+	}
+}
 func TestSameOp(t *testing.T) {
 	opsList := []Opcode{
 		opNoop,

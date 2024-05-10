@@ -78,3 +78,11 @@ func (inst Instruction) SameOp(instTwo Instruction) bool {
 func (inst Instruction) Complement(instTwo Instruction) bool {
 	return inst.SameOp(instTwo) && inst.operand+instTwo.operand == 0
 }
+
+// IsZeroOp returns true for ops that have left the pointer on a zero
+func (inst Instruction) IsZeroOp() bool {
+	return inst.operator == opJmpNz ||
+		inst.operator == opNoop ||
+		inst.operator == opMove ||
+		(inst.operator == opSetVal && inst.operand == 0)
+}

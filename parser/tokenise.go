@@ -36,9 +36,7 @@ func Tokenise(input io.ByteReader) (program []Instruction, err error) {
 				program[pc-1].operand += instruction.operand
 				program = program[:pc]
 				pc--
-			} else if program[pc-1].SameOp(NewInstruction(']')) ||
-				program[pc-1].operator == opMove ||
-				program[pc-1].operator == opNoop {
+			} else if program[pc-1].IsZeroOp() {
 				operand := instruction.operand
 				program = program[:pc]
 				program = append(program, Instruction{opSetVal, operand})
@@ -53,9 +51,7 @@ func Tokenise(input io.ByteReader) (program []Instruction, err error) {
 			jmpStack = jmpStack[:len(jmpStack)-1]
 			program[pc].operand = jmpPc
 			program[jmpPc].operand = pc
-			if jmpPc == 1 ||
-				program[jmpPc-1].Complement(Instruction{opSetVal, 0}) ||
-				program[jmpPc-1].SameOp(NewInstruction(']')) {
+			if program[jmpPc-1].IsZeroOp() {
 				pc = jmpPc
 				program = program[:pc]
 				pc--
