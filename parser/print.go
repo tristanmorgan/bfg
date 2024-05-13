@@ -52,10 +52,7 @@ func instPrint(inst, lastInst Instruction) string {
 			if inst.operand < 0 {
 				multiplier = strings.Repeat("-", abs(inst.operand))
 			}
-			if lastInst.operand > 0 {
-				return "[-" + strings.Repeat(">", lastInst.operand) + multiplier + strings.Repeat("<", lastInst.operand) + "]"
-			}
-			return "[-" + strings.Repeat("<", abs(lastInst.operand)) + multiplier + strings.Repeat(">", abs(lastInst.operand)) + "]"
+			return "[-" + repeatDirection("<", ">", lastInst.operand) + multiplier + repeatDirection(">", "<", lastInst.operand) + "]"
 		}
 		return ""
 	default:
@@ -70,6 +67,10 @@ func Print(program []Instruction, writer *bufio.Writer) {
 	endLoop := NewInstruction(']')
 	lastInst := NewInstruction('!')
 	for _, inst := range program {
+		if inst.operator == opMulVal {
+			lastInst = inst
+			continue
+		}
 		if inst.SameOp(endLoop) {
 			depth--
 		}
