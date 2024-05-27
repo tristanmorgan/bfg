@@ -6,6 +6,23 @@ import (
 	"testing"
 )
 
+func (inst Instruction) string() string {
+	opName := [...]string{
+		"nop",
+		"ptr",
+		"add",
+		"set",
+		"out",
+		"inp",
+		"jmp",
+		"jnz",
+		"mov",
+		"skp",
+		"mul",
+	}
+	return fmt.Sprintf("%s: %v", opName[inst.operator], inst.operand)
+}
+
 func TestNewInstruction(t *testing.T) {
 	sourceCode := "g><+-.,[]"
 	program := []Instruction{
@@ -21,7 +38,7 @@ func TestNewInstruction(t *testing.T) {
 	}
 
 	for idx, val := range []byte(sourceCode) {
-		t.Run(program[idx].String(), func(t *testing.T) {
+		t.Run(program[idx].string(), func(t *testing.T) {
 			got := NewInstruction(val)
 			want := program[idx]
 

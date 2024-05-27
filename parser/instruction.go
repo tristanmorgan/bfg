@@ -1,9 +1,5 @@
 package parser
 
-import (
-	"fmt"
-)
-
 // Instruction structure for intermediate program
 type Instruction struct {
 	operator Opcode
@@ -26,24 +22,6 @@ const (
 	opSkip
 	opMulVal
 )
-
-// String representation of Instruction
-func (inst Instruction) String() string {
-	opName := [...]string{
-		"nop",
-		"ptr",
-		"add",
-		"set",
-		"out",
-		"inp",
-		"jmp",
-		"jnz",
-		"mov",
-		"skp",
-		"mul",
-	}
-	return fmt.Sprintf("%s: %v", opName[inst.operator], inst.operand)
-}
 
 // NewInstruction created from a sourcecode byte
 func NewInstruction(chr byte) Instruction {

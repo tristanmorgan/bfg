@@ -31,17 +31,12 @@ for performance comparison see no_optimisation branch.
 ## Usage
 
     Usage:
-      bf [option] source.bf [input]
+      bfg [option] source.bf [input]
     
     Options:
-      -dump
-    	    dump parsed program
-      -eight
-    	    eight bit execution
-      -print
-    	    pretty print parsed program
-      -version
-    	    display version
+      -e, --eight	eight bit execution
+      -p, --print	pretty print parsed program
+      -v, --version	display version
 
 May use - as source to read program from STDIN and output is STDOUT
 

@@ -11,9 +11,16 @@ import (
 	"github.com/tristanmorgan/bfg/parser"
 )
 
+const usage = `
+Options:
+  -e, --eight	eight bit execution
+  -p, --print	pretty print parsed program
+  -v, --version	display version
+`
+
 var (
 	// Version is the main version number that is being run at the moment.
-	Version = "0.0.1"
+	Version = "0.1.0"
 
 	// VersionPrerelease is A pre-release marker for the Version. If this is ""
 	// (empty string) then it means that it is a final release. Otherwise, this
@@ -22,19 +29,21 @@ var (
 )
 
 func main() {
-	version := flag.Bool("version", false, "display version")
-	eight := flag.Bool("eight", false, "eight bit execution")
-	dump := flag.Bool("dump", false, "dump parsed program")
-	print := flag.Bool("print", false, "pretty print parsed program")
+	var version, eight, print bool
+	flag.BoolVar(&version, "v", false, "display version")
+	flag.BoolVar(&version, "version", false, "display version")
+	flag.BoolVar(&eight, "e", false, "eight bit execution")
+	flag.BoolVar(&eight, "eight", false, "eight bit execution")
+	flag.BoolVar(&print, "p", false, "pretty print parsed program")
+	flag.BoolVar(&print, "print", false, "pretty print parsed program")
 
 	flag.Usage = func() {
 		fmt.Printf("Usage:\n  %s [option] source.bf [input]\n", os.Args[0])
-		fmt.Println("\nOptions:")
-		flag.PrintDefaults()
+		fmt.Print(usage)
 	}
 
 	flag.Parse()
-	if *version {
+	if version {
 		fmt.Printf("Version: v%s%s\n", Version, VersionPrerelease)
 		fmt.Println("https://github.com/tristanmorgan/bfg")
 		os.Exit(0)
@@ -61,11 +70,9 @@ func main() {
 		fmt.Println("error compiling program: err:", err)
 		os.Exit(1)
 	}
-	if *dump {
-		parser.Dump(program, outputBuf)
-	} else if *print {
+	if print {
 		parser.Print(program, outputBuf)
-	} else if *eight {
+	} else if eight {
 		data := make([]byte, parser.DataSize)
 		parser.Execute(data, program, inputBuf, outputBuf)
 	} else {
