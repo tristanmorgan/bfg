@@ -3,6 +3,7 @@ package parser
 import (
 	"bufio"
 	"errors"
+	"os"
 	"reflect"
 	"strings"
 	"testing"
@@ -162,5 +163,17 @@ func TestTokeniseError(t *testing.T) {
 				t.Errorf("got %v want %v", got, want)
 			}
 		})
+	}
+}
+
+func BenchmarkTokenise(b *testing.B) {
+	sourceFile, err := os.Open("../sample/pi-digits.bf")
+	if err != nil {
+		b.Errorf("error opening program: err:")
+	}
+	buff := bufio.NewReader(sourceFile)
+	for i := 0; i < b.N; i++ {
+		Tokenise(buff)
+
 	}
 }

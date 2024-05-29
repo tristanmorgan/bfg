@@ -30,6 +30,9 @@ jobs:
     - name: Test
       run: go test -v ./...
 
+    - name: Benchmark
+      run: go test -bench=. -count 5 ./...
+
   build:
     needs: test
     strategy:
