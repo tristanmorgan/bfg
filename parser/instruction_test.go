@@ -6,21 +6,22 @@ import (
 	"testing"
 )
 
+var opName = map[Opcode]string{
+	opNoop:   "nop",
+	opAddDp:  "ptr",
+	opAddVal: "add",
+	opSetVal: "set",
+	opOut:    "out",
+	opIn:     "inp",
+	opJmpZ:   "jmp",
+	opJmpNz:  "jnz",
+	opMove:   "mov",
+	opSkip:   "skp",
+	opMulVal: "mul",
+}
+
 func (inst Instruction) string() string {
-	opName := [...]string{
-		"nop",
-		"ptr",
-		"add",
-		"set",
-		"out",
-		"inp",
-		"jmp",
-		"jnz",
-		"mov",
-		"skp",
-		"mul",
-	}
-	return fmt.Sprintf("%s: %v", opName[inst.operator], inst.operand)
+	return fmt.Sprintf("%s:%v", opName[inst.operator], inst.operand)
 }
 
 func TestNewInstruction(t *testing.T) {
@@ -75,7 +76,7 @@ func TestIsZeroOp(t *testing.T) {
 
 	for idx, val := range program {
 		if want[idx] != val.IsZeroOp() {
-			t.Errorf("testing %v got %v want %v", val, val.IsZeroOp(), want[idx])
+			t.Errorf("testing %v got %v want %v", val.string(), val.IsZeroOp(), want[idx])
 		}
 	}
 }
@@ -95,7 +96,7 @@ func TestSameOp(t *testing.T) {
 	}
 
 	for row, rval := range opsList {
-		t.Run(fmt.Sprintf("%d", row), func(t *testing.T) {
+		t.Run(opName[rval], func(t *testing.T) {
 			for col, cval := range opsList {
 				rinst := Instruction{rval, col}
 				cinst := Instruction{cval, row}
@@ -118,7 +119,7 @@ func TestComplement(t *testing.T) {
 
 	for row, rval := range opsList {
 		for col, cval := range opsList {
-			t.Run(fmt.Sprintf("%d-%d", row, col), func(t *testing.T) {
+			t.Run(fmt.Sprintf("%s-%s", opName[rval], opName[cval]), func(t *testing.T) {
 				for operand := range [6]int{} {
 					rinst := Instruction{rval, operand}
 					cinst := Instruction{cval, operand - 6}

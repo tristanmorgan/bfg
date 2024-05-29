@@ -23,28 +23,20 @@ const (
 	opMulVal
 )
 
+var instMap = map[byte]Instruction{
+	'>': Instruction{opAddDp, 1},
+	'<': Instruction{opAddDp, -1},
+	'+': Instruction{opAddVal, 1},
+	'-': Instruction{opAddVal, -1},
+	'.': Instruction{opOut, 1},
+	',': Instruction{opIn, 1},
+	'[': Instruction{opJmpZ, 0},
+	']': Instruction{opJmpNz, 0},
+}
+
 // NewInstruction created from a sourcecode byte
 func NewInstruction(chr byte) Instruction {
-	switch chr {
-	case '>':
-		return Instruction{opAddDp, 1}
-	case '<':
-		return Instruction{opAddDp, -1}
-	case '+':
-		return Instruction{opAddVal, 1}
-	case '-':
-		return Instruction{opAddVal, -1}
-	case '.':
-		return Instruction{opOut, 1}
-	case ',':
-		return Instruction{opIn, 1}
-	case '[':
-		return Instruction{opJmpZ, 0}
-	case ']':
-		return Instruction{opJmpNz, 0}
-	default:
-		return Instruction{opNoop, 0}
-	}
+	return instMap[chr]
 }
 
 // SameOp compares Instructions operator but not operand
