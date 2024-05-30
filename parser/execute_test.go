@@ -58,7 +58,7 @@ type bufferWriter struct {
 
 func (writer *bufferWriter) Write(p []byte) (int, error) {
 	writer.buf = append(writer.buf, p...)
-	return 0, nil
+	return len(p), nil
 }
 
 func BenchmarkExecute(b *testing.B) {

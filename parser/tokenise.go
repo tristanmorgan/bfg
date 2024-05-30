@@ -51,23 +51,28 @@ func Tokenise(input io.ByteReader) (program []Instruction, err error) {
 			jmpStack = jmpStack[:len(jmpStack)-1]
 			program[pc].operand = jmpPc
 			program[jmpPc].operand = pc
-			if program[jmpPc-1].IsZeroOp() {
+			switch {
+			case program[jmpPc-1].IsZeroOp():
 				pc = jmpPc
 				program = program[:pc]
 				pc--
-			} else if pc-jmpPc == 2 && program[pc-1].SameOp(NewInstruction('+')) {
+			case pc-jmpPc == 2 &&
+				(program[pc-1].SameOp(NewInstruction('+')) ||
+					program[pc-1].operator == opSetVal):
 				pc = jmpPc
 				if program[jmpPc-1].SameOp(NewInstruction('+')) {
 					pc--
 				}
 				program = program[:pc]
 				program = append(program, Instruction{opSetVal, 0})
-			} else if pc-jmpPc == 2 && program[pc-1].SameOp(NewInstruction('>')) {
+			case pc-jmpPc == 2 &&
+				(program[pc-1].SameOp(NewInstruction('>')) ||
+					program[pc-1].operator == opSkip):
 				offset := program[pc-1].operand
 				pc = jmpPc
 				program = program[:pc]
 				program = append(program, Instruction{opSkip, offset})
-			} else if pc-jmpPc == 5 { // looking for opMulVal and opMove
+			case pc-jmpPc == 5: // looking for opMulVal and opMove
 				var factor, offset = 0, 0
 				if program[pc-4].Complement(NewInstruction('+')) &&
 					program[pc-3].Complement(program[pc-1]) &&

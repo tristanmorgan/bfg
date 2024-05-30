@@ -54,5 +54,6 @@ func (inst Instruction) IsZeroOp() bool {
 	return inst.operator == opJmpNz ||
 		inst.operator == opNoop ||
 		inst.operator == opMove ||
+		inst.operator == opSkip ||
 		(inst.operator == opSetVal && inst.operand == 0)
 }
