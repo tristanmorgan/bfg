@@ -20,7 +20,7 @@ var opName = map[Opcode]string{
 	opMulVal: "mul",
 }
 
-func (inst Instruction) string() string {
+func (inst Instruction) String() string {
 	return fmt.Sprintf("%s:%v", opName[inst.operator], inst.operand)
 }
 
@@ -39,7 +39,7 @@ func TestNewInstruction(t *testing.T) {
 	}
 
 	for idx, val := range []byte(sourceCode) {
-		t.Run(program[idx].string(), func(t *testing.T) {
+		t.Run(program[idx].String(), func(t *testing.T) {
 			got := NewInstruction(val)
 			want := program[idx]
 
@@ -76,7 +76,7 @@ func TestIsZeroOp(t *testing.T) {
 
 	for idx, val := range program {
 		if want[idx] != val.IsZeroOp() {
-			t.Errorf("testing %v got %v want %v", val.string(), val.IsZeroOp(), want[idx])
+			t.Errorf("testing %v got %v want %v", val, val.IsZeroOp(), want[idx])
 		}
 	}
 }
