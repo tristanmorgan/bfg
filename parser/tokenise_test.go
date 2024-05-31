@@ -82,15 +82,25 @@ func TestTokenise(t *testing.T) {
 			},
 		},
 		{
-			"op_jmp_z_nz",
+			"op_dup",
 			">[->>+>+<<<]",
+			[]Instruction{
+				{opNoop, 0},
+				{opAddDp, 1},
+				{opDupVal, 2},
+				{opNoop, 3},
+			},
+		},
+		{
+			"op_jmp_z_nz",
+			">[->>,>+<<<]",
 			[]Instruction{
 				{opNoop, 0},
 				{opAddDp, 1},
 				{opJmpZ, 9},
 				{opAddVal, -1},
 				{opAddDp, 2},
-				{opAddVal, 1},
+				{opIn, 1},
 				{opAddDp, 1},
 				{opAddVal, 1},
 				{opAddDp, -3},
@@ -113,10 +123,10 @@ func TestTokenise(t *testing.T) {
 			got, err := Tokenise(bufio.NewReader(strings.NewReader(v.code)))
 			want := v.program
 
-			if !reflect.DeepEqual(got, want) {
-				t.Errorf("got %v want %v", got, want)
-			} else if err != nil {
+			if err != nil {
 				t.Errorf("Error thrown  %v", err)
+			} else if !reflect.DeepEqual(got, want) {
+				t.Errorf("got %v want %v", got, want)
 			}
 		})
 	}

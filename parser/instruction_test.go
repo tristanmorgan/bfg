@@ -18,6 +18,7 @@ var opName = map[Opcode]string{
 	opMove:   "mov",
 	opSkip:   "skp",
 	opMulVal: "mul",
+	opDupVal: "dup",
 }
 
 func (inst Instruction) String() string {
@@ -95,6 +96,7 @@ func TestSameOp(t *testing.T) {
 		opMove,
 		opSkip,
 		opMulVal,
+		opDupVal,
 	}
 
 	for row, rval := range opsList {

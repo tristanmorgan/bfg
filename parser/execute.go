@@ -71,6 +71,13 @@ func Execute[T Number](data []T, program []Instruction, reader io.ByteReader, wr
 			data[destPtr] += data[dataPtr] * T(factor)
 			data[dataPtr] = 0
 			pc++
+		case opDupVal:
+			firstPtr := (operand + dataPtr) & DataMask
+			secondPtr := (program[pc+1].operand + dataPtr) & DataMask
+			data[firstPtr] += data[dataPtr]
+			data[secondPtr] += data[dataPtr]
+			data[dataPtr] = 0
+			pc++
 		case opNoop:
 			continue
 		default:

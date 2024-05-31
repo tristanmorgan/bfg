@@ -46,13 +46,14 @@ func instPrint(inst, lastInst Instruction) string {
 		return "[" + repeatDirection("<", ">", inst.operand) + "]"
 	case opMulVal:
 		return ""
+	case opDupVal:
+		return ""
 	case opNoop:
 		if lastInst.operator == opMulVal {
-			multiplier := strings.Repeat("+", abs(inst.operand))
-			if inst.operand < 0 {
-				multiplier = strings.Repeat("-", abs(inst.operand))
-			}
+			multiplier := repeatDirection("-", "+", inst.operand)
 			return "[-" + repeatDirection("<", ">", lastInst.operand) + multiplier + repeatDirection(">", "<", lastInst.operand) + "]"
+		} else if lastInst.operator == opDupVal {
+			return "[-" + repeatDirection("<", ">", lastInst.operand) + "+" + repeatDirection("<", ">", inst.operand-lastInst.operand) + "+" + repeatDirection(">", "<", inst.operand) + "]"
 		}
 		return ""
 	default:

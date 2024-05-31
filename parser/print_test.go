@@ -16,6 +16,10 @@ func TestPrint(t *testing.T) {
 		{opMove, 2},
 		{opJmpZ, 7},
 		{opIn, 1},
+		{opMulVal, 2},
+		{opNoop, 2},
+		{opDupVal, 1},
+		{opNoop, 2},
 		{opJmpNz, 5},
 		{opAddDp, 2},
 	}
@@ -23,7 +27,7 @@ func TestPrint(t *testing.T) {
 	outputBuf := bufio.NewWriter(&buf)
 	Print(program, outputBuf)
 	got := buf.String()
-	want := " \n >>>>>\n [-]\n +++++\n [->>+<<]\n [\n\t ,\n ]\n >>\n"
+	want := " \n >>>>>\n [-]\n +++++\n [->>+<<]\n [\n\t ,\n\t [->>++<<]\n\t \n\t [->+>+<<]\n ]\n >>\n"
 
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("got %v want %v", got, want)
