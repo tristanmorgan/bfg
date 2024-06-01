@@ -17,13 +17,14 @@ Buffered output flushes on newline, 200 chars or input.
 Operates with a instruction parse then execute pattern.
 
  * loop start/end are calculated up front.
- * [-] is replaced with a blind set 0 command
  * repeat ++++ or --- are replaced with a single addition/subtraction
+ * [-] is converted to a blind set 0 command
  * addition/subtraction after zero does a blind set.
  * repeat >>> or <<< are replaced with a single pointer jump
- * [>>>] and [<<<] are merged into a skip instruction.
- * [>>+<<-] and [->>+<<] merged into a move instruction.
- * [<+++++>-] is converted to a Multiply instruction.
+ * [>>>] is merged into a skip instruction.
+ * [>>+<<-] is merged into a move instruction.
+ * [<+++++>-] is converted to a multiply instruction.
+ * [<<+>+>-] is converted to a duplicate instruction.
  * and dead code removal.
 
 for performance comparison see no_optimisation branch.
