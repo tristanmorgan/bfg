@@ -157,9 +157,9 @@ func BenchmarkTokenise(b *testing.B) {
 	if err != nil {
 		b.Errorf("error opening program: err:")
 	}
-	buff := bufio.NewReader(sourceFile)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
+		buff := bufio.NewReader(sourceFile)
 		Tokenise(buff)
 	}
 }

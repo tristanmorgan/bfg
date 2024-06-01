@@ -67,11 +67,11 @@ func BenchmarkExecute(b *testing.B) {
 		b.Errorf("error opening program: err:")
 	}
 	buff := bufio.NewReader(sourceFile)
-	inputBuf := bufio.NewReader(strings.NewReader("80\n"))
-	outputBuf := bufio.NewWriter(&bufferWriter{})
 	program, _ := Tokenise(buff)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
+		inputBuf := bufio.NewReader(strings.NewReader("80\n"))
+		outputBuf := bufio.NewWriter(&bufferWriter{})
 		startdata := make([]int, 65536)
 		Execute(startdata, program, inputBuf, outputBuf)
 	}
