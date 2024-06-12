@@ -68,7 +68,8 @@ func Print(program []Instruction, writer *bufio.Writer) {
 	endLoop := NewInstruction(']')
 	lastInst := NewInstruction('!')
 	for _, inst := range program {
-		if inst.operator == opMulVal {
+		if inst.operator == opMulVal ||
+			inst.operator == opDupVal {
 			lastInst = inst
 			continue
 		}
