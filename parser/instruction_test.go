@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"reflect"
 	"testing"
+	"unsafe"
 )
 
 var opName = map[Opcode]string{
@@ -23,6 +24,21 @@ var opName = map[Opcode]string{
 
 func (inst Instruction) String() string {
 	return fmt.Sprintf("%s:%v", opName[inst.operator], inst.operand)
+}
+
+func TestInstructionSize(t *testing.T) {
+	sizes := []uintptr{2, 4, 8, 16, 32, 64, 128}
+	ok := false
+	got := unsafe.Sizeof(NewInstruction('-'))
+	for _, s := range sizes {
+		if s == got {
+			ok = true
+			break
+		}
+	}
+	if !ok {
+		t.Errorf("size not in array: got %v", got)
+	}
 }
 
 func TestNewInstruction(t *testing.T) {

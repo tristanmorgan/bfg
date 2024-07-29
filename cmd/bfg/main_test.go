@@ -1,7 +1,6 @@
 package main
 
 import (
-	"io"
 	"testing"
 )
 
@@ -53,8 +52,7 @@ func TestInputReader(t *testing.T) {
 			} else if err == nil && v.err {
 				t.Error("Error was expected")
 			} else if !v.err {
-				_, ok := buff.(io.ByteReader)
-				if !ok {
+				if buff == nil {
 					t.Error("no reader returned")
 				}
 			}
