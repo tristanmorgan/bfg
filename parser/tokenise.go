@@ -79,6 +79,10 @@ func Tokenise(input io.ByteReader) (program []Instruction, err error) {
 					pc = jmpPc
 					program = program[:pc]
 					program = append(program, Instruction{opMove, pointers[0]})
+				} else if ok && factors[0] == -1 {
+					pc = jmpPc
+					program = program[:pc]
+					program = append(program, Instruction{opMovN, pointers[0]})
 				} else if ok && factors[0] != 0 {
 					pc = jmpPc
 					program = program[:pc]

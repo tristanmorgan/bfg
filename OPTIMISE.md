@@ -26,8 +26,14 @@ running benchmarks on different version of the code I discovered areas of improv
 
 ## One more instruction
 
-The last common pattern was identified as a fixed multiplication instruction. Where similar to the move instruction, for each decrement of the source cell another was incremented multiple times by a fixed amount `[->>++++<<]`. this too had an alternative where the decrement was at either the start or end `[>>++++<<-]`. This instruction required a second operand so I leveraged a following "noop" instruction to store it. 
+The last common pattern was identified as a fixed multiplication instruction. Where similar to the move instruction, for each decrement of the source cell another was incremented multiple times by a fixed amount `[->>++++<<]`. this too had an alternative where the decrement was at either the start or end `[>>++++<<-]`. This instruction required a second operand so I leveraged a following "noop" instruction to store it.
+
+## And some more
+
+With multiple operand instructions unlocked `[>+>>+<<<-]` detection could be added. This being a duplicate value instruction. It will take one cells value and adds it to two new cells. Ideally they should be empty but there's no guarantee that this is true. Also added a variation of the move instruction but with a negative accumulation `[<<->>-]`.
 
 ## Dead code removal
 
-Probably without a real-world performance improvement is dropping dead code from the output of the instruction parsing stage. Often a loop block is used to store comments in BF knowing that any characters within will never be interpreted during runtime. Identifying these comment blocks isn't always trivial but if a block starts directly after a cell being zeroed out then they could be skipped. To validate all the optimisations I kept a branch called no_optimisation updated to test a performance comparison and the correct operation of the optimised version.
+Probably without a real-world performance improvement is dropping dead code from the output of the instruction parsing stage. Often a loop block is used to store comments in BF knowing that any characters within will never be interpreted during runtime. Identifying these comment blocks isn't always trivial but if a block starts directly after a cell being zeroed out then they could be skipped. 
+
+To validate all the optimisations I kept a branch called no_optimisation updated to test a performance comparison and the correct operation of the optimised version.

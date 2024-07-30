@@ -65,6 +65,10 @@ func Execute[T Number](data []T, program []Instruction, reader io.ByteReader, wr
 			destPtr := (operand + dataPtr) & DataMask
 			data[destPtr] += data[dataPtr]
 			data[dataPtr] = 0
+		case opMovN:
+			destPtr := (operand + dataPtr) & DataMask
+			data[destPtr] -= data[dataPtr]
+			data[dataPtr] = 0
 		case opMulVal:
 			destPtr := (operand + dataPtr) & DataMask
 			factor := program[pc+1].operand

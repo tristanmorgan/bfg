@@ -19,6 +19,7 @@ const (
 	opJmpZ
 	opJmpNz
 	opMove
+	opMovN
 	opSkip
 	opMulVal
 	opDupVal
@@ -52,9 +53,10 @@ func (inst Instruction) Complement(instTwo Instruction) bool {
 
 // IsZeroOp returns true for ops that have left the pointer on a zero
 func (inst Instruction) IsZeroOp() bool {
-	return inst.operator == opJmpNz ||
-		inst.operator == opNoop ||
-		inst.operator == opMove ||
-		inst.operator == opSkip ||
-		(inst.operator == opSetVal && inst.operand == 0)
+	return !(inst.operator == opAddDp ||
+		inst.operator == opAddVal ||
+		inst.operator == opJmpZ ||
+		inst.operator == opOut ||
+		inst.operator == opIn ||
+		(inst.operator == opSetVal && inst.operand != 0))
 }

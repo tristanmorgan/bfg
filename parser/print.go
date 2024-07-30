@@ -42,12 +42,10 @@ func instPrint(inst, lastInst Instruction) string {
 		return "]"
 	case opMove:
 		return "[-" + repeatDirection("<", ">", inst.operand) + "+" + repeatDirection(">", "<", inst.operand) + "]"
+	case opMovN:
+		return "[-" + repeatDirection("<", ">", inst.operand) + "-" + repeatDirection(">", "<", inst.operand) + "]"
 	case opSkip:
 		return "[" + repeatDirection("<", ">", inst.operand) + "]"
-	case opMulVal:
-		return ""
-	case opDupVal:
-		return ""
 	case opNoop:
 		if lastInst.operator == opMulVal {
 			multiplier := repeatDirection("-", "+", inst.operand)
