@@ -26,14 +26,14 @@ const (
 )
 
 var instMap = map[byte]Instruction{
-	'>': Instruction{opAddDp, 1},
-	'<': Instruction{opAddDp, -1},
-	'+': Instruction{opAddVal, 1},
-	'-': Instruction{opAddVal, -1},
-	'.': Instruction{opOut, 1},
-	',': Instruction{opIn, 1},
-	'[': Instruction{opJmpZ, 0},
-	']': Instruction{opJmpNz, 0},
+	'>': {opAddDp, 1},
+	'<': {opAddDp, -1},
+	'+': {opAddVal, 1},
+	'-': {opAddVal, -1},
+	'.': {opOut, 1},
+	',': {opIn, 1},
+	'[': {opJmpZ, 0},
+	']': {opJmpNz, 0},
 }
 
 // NewInstruction created from a sourcecode byte
