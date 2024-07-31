@@ -46,11 +46,6 @@ func (inst Instruction) SameOp(instTwo Instruction) bool {
 	return inst.operator == instTwo.operator
 }
 
-// Complement compares Instructions operator and operand
-func (inst Instruction) Complement(instTwo Instruction) bool {
-	return inst.SameOp(instTwo) && inst.operand+instTwo.operand == 0
-}
-
 // IsZeroOp returns true for ops that have left the pointer on a zero
 func (inst Instruction) IsZeroOp() bool {
 	return !(inst.operator == opAddDp ||

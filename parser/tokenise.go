@@ -111,14 +111,16 @@ func Tokenise(input io.ByteReader) (program []Instruction, err error) {
 
 func evalFactors(program []Instruction) (pointers, factors []int, ok bool) {
 	ok = false
+	invert := false
 	collect := 0
 	pointers = make([]int, 0)
 	factors = make([]int, 0)
 	for _, inst := range program {
 		if inst.SameOp(NewInstruction('>')) {
 			collect += inst.operand
-		} else if collect == 0 && inst.Complement(NewInstruction('+')) {
-			ok = true
+		} else if collect == 0 && inst.SameOp(NewInstruction('-')) {
+			ok = inst.operand == 1 || inst.operand == -1
+			invert = inst.operand == 1
 		} else if inst.SameOp(NewInstruction('-')) {
 			pointers = append(pointers, collect)
 			factors = append(factors, inst.operand)
@@ -128,6 +130,11 @@ func evalFactors(program []Instruction) (pointers, factors []int, ok bool) {
 	}
 	if collect != 0 || !ok {
 		return pointers, factors, false
+	}
+	if invert {
+		for i := range len(factors) {
+			factors[i] = 0 - factors[i]
+		}
 	}
 	return
 }
