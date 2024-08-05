@@ -17,7 +17,7 @@ func TestTokenise(t *testing.T) {
 	}{
 		{
 			"small_prog",
-			">>>>>++[-]zero+++++>+++++[->>+<<]move>>[>>-<<-]movn",
+			">>>>>++[-]zero+++++>+++++[[->>+<<]move]>>[[>>-<<-]movn]",
 			[]Instruction{
 				{opNoop, 0},
 				{opAddDp, 5},
@@ -31,7 +31,7 @@ func TestTokenise(t *testing.T) {
 		},
 		{
 			"op_mul",
-			"+[<++++++>-]>[->>---<<]",
+			"+[<++++++>-]>[+>>+++<<]",
 			[]Instruction{
 				{opNoop, 0},
 				{opSetVal, 1},
@@ -71,7 +71,7 @@ func TestTokenise(t *testing.T) {
 		},
 		{
 			"op_move",
-			">[->>+<<]>[<<<+>>>-]++",
+			">[->>+<<]>[<<<+>>>-]++[[>-<-]]",
 			[]Instruction{
 				{opNoop, 0},
 				{opAddDp, 1},
@@ -79,6 +79,7 @@ func TestTokenise(t *testing.T) {
 				{opAddDp, 1},
 				{opMove, -3},
 				{opSetVal, 2},
+				{opMovN, 1},
 			},
 		},
 		{
@@ -96,7 +97,7 @@ func TestTokenise(t *testing.T) {
 		},
 		{
 			"op_jmp_z_nz",
-			">[->>,>+<<<]",
+			">[->>,>+<<<]>[<<+>>--]",
 			[]Instruction{
 				{opNoop, 0},
 				{opAddDp, 1},
@@ -108,15 +109,23 @@ func TestTokenise(t *testing.T) {
 				{opAddVal, 1},
 				{opAddDp, -3},
 				{opJmpNz, 2},
+				{opAddDp, 1},
+				{opJmpZ, 16},
+				{opAddDp, -2},
+				{opAddVal, 1},
+				{opAddDp, 2},
+				{opAddVal, -2},
+				{opJmpNz, 11},
 			},
 		},
 		{
 			"op_nested",
-			">[[[[[[[>]]]]]]][comment.]",
+			">[[[[[[[>]]]]]]][comment.]+++[[-]]",
 			[]Instruction{
 				{opNoop, 0},
 				{opAddDp, 1},
 				{opSkip, 1},
+				{opSetVal, 0},
 			},
 		},
 	}

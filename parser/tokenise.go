@@ -51,27 +51,22 @@ func Tokenise(input io.ByteReader) (program []Instruction, err error) {
 			jmpStack = jmpStack[:len(jmpStack)-1]
 			program[pc].operand = jmpPc
 			program[jmpPc].operand = pc
+
+			redOk, reduceInst := reduceInst(program[pc-1])
 			switch {
 			case program[jmpPc-1].IsZeroOp():
 				pc = jmpPc
 				program = program[:pc]
 				pc--
-			case pc-jmpPc == 2 &&
-				(program[pc-1].SameOp(NewInstruction('+')) ||
-					program[pc-1].operator == opSetVal):
+			case pc-jmpPc == 2 && redOk:
 				pc = jmpPc
-				if program[jmpPc-1].SameOp(NewInstruction('+')) {
+				if (program[jmpPc-1].operator == opAddVal ||
+					program[jmpPc-1].operator == opSetVal) &&
+					reduceInst.operator == opSetVal {
 					pc--
 				}
 				program = program[:pc]
-				program = append(program, Instruction{opSetVal, 0})
-			case pc-jmpPc == 2 &&
-				(program[pc-1].SameOp(NewInstruction('>')) ||
-					program[pc-1].operator == opSkip):
-				offset := program[pc-1].operand
-				pc = jmpPc
-				program = program[:pc]
-				program = append(program, Instruction{opSkip, offset})
+				program = append(program, reduceInst)
 			case pc-jmpPc == 5: // looking for opMulVal and opMove
 				pointers, factors, ok := evalFactors(program[jmpPc+1 : pc])
 
@@ -137,4 +132,29 @@ func evalFactors(program []Instruction) (pointers, factors []int, ok bool) {
 		}
 	}
 	return
+}
+
+func reduceInst(inst Instruction) (bool, Instruction) {
+	switch inst.operator {
+	case opAddDp:
+		return true, Instruction{opSkip, inst.operand}
+	case opSkip:
+		return true, inst
+	case opAddVal:
+		if inst.operand == 1 || inst.operand == -1 {
+			return true, Instruction{opSetVal, 0}
+		}
+		return false, Instruction{opNoop, 0}
+	case opSetVal:
+		if inst.operand == 0 {
+			return true, inst
+		}
+		return false, Instruction{opNoop, 0}
+	case opMove:
+		return true, inst
+	case opMovN:
+		return true, inst
+	default:
+		return false, Instruction{opNoop, 0}
+	}
 }
