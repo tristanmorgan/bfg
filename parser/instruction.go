@@ -23,6 +23,7 @@ const (
 	opSkip
 	opMulVal
 	opDupVal
+	opVec
 )
 
 var instMap = map[byte]Instruction{

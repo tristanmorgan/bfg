@@ -83,6 +83,17 @@ func TestTokenise(t *testing.T) {
 			},
 		},
 		{
+			"op_vec",
+			">[->>+++>+++<<<]",
+			[]Instruction{
+				{opNoop, 0},
+				{opAddDp, 1},
+				{opVec, 2},
+				{opNoop, 3},
+				{opNoop, 3},
+			},
+		},
+		{
 			"op_dup",
 			">[->>+>+<<<]>[>>+<<-<<+>>]",
 			[]Instruction{

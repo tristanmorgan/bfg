@@ -20,7 +20,7 @@ func repeatDirection(neg, pos string, vect int) string {
 	return strings.Repeat(neg, abs(vect))
 }
 
-func instPrint(inst, lastInst Instruction) string {
+func instPrint(inst, lastInst, lastlastInst Instruction) string {
 	switch inst.operator {
 	case opAddDp:
 		return repeatDirection("<", ">", inst.operand)
@@ -52,6 +52,9 @@ func instPrint(inst, lastInst Instruction) string {
 			return "[-" + repeatDirection("<", ">", lastInst.operand) + multiplier + repeatDirection(">", "<", lastInst.operand) + "]"
 		} else if lastInst.operator == opDupVal {
 			return "[-" + repeatDirection("<", ">", lastInst.operand) + "+" + repeatDirection("<", ">", inst.operand-lastInst.operand) + "+" + repeatDirection(">", "<", inst.operand) + "]"
+		} else if lastlastInst.operator == opVec {
+			multiplier := repeatDirection("-", "+", inst.operand)
+			return "[-" + repeatDirection("<", ">", lastlastInst.operand) + multiplier + repeatDirection("<", ">", lastInst.operand-lastlastInst.operand) + multiplier + repeatDirection(">", "<", lastInst.operand) + "]"
 		}
 		return ""
 	default:
@@ -65,17 +68,19 @@ func Print(program []Instruction, writer *bufio.Writer) {
 	startLoop := NewInstruction('[')
 	endLoop := NewInstruction(']')
 	lastInst := NewInstruction('!')
+	lastlastInst := NewInstruction('!')
 	for _, inst := range program {
 		if inst.SameOp(endLoop) {
 			depth--
 		}
-		printout := instPrint(inst, lastInst)
+		printout := instPrint(inst, lastInst, lastlastInst)
 		if printout != "" {
 			fmt.Fprintln(writer, strings.Repeat("\t", depth), printout)
 		}
 		if inst.SameOp(startLoop) {
 			depth++
 		}
+		lastlastInst = lastInst
 		lastInst = inst
 	}
 	writer.Flush()

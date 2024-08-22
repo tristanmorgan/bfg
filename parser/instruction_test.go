@@ -21,6 +21,7 @@ var opName = map[Opcode]string{
 	opSkip:   "skp",
 	opMulVal: "mul",
 	opDupVal: "dup",
+	opVec:    "vec",
 }
 
 func (inst Instruction) String() string {
@@ -84,6 +85,7 @@ func TestIsZeroOp(t *testing.T) {
 		{opMovN, 1},
 		{opMulVal, 1},
 		{opDupVal, 1},
+		{opVec, 1},
 	}
 	want := []bool{
 		true,
@@ -94,6 +96,7 @@ func TestIsZeroOp(t *testing.T) {
 		false,
 		false,
 		false,
+		true,
 		true,
 		true,
 		true,
@@ -123,6 +126,7 @@ func TestSameOp(t *testing.T) {
 		opSkip,
 		opMulVal,
 		opDupVal,
+		opVec,
 	}
 
 	for row, rval := range opsList {
