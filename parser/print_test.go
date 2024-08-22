@@ -31,7 +31,7 @@ func TestPrint(t *testing.T) {
 	outputBuf := bufio.NewWriter(&buf)
 	Print(program, outputBuf)
 	got := buf.String()
-	want := " \n >>>>>\n [-]\n +++++\n [->>+<<]\n [\n\t ,\n\t [<<<]\n\t ++\n\t [->>++<<]\n\t [->+>+<<]\n ]\n >>\n .\n [->>-<<]\n"
+	want := " >>>>>\n [-]\n +++++\n [->>+<<]\n [\n\t ,\n\t [<<<]\n\t ++\n\t [->>++<<]\n\t [->+>+<<]\n ]\n >>\n .\n [->>-<<]\n"
 
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("got %v want %v", got, want)

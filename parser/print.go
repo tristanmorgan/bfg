@@ -66,15 +66,13 @@ func Print(program []Instruction, writer *bufio.Writer) {
 	endLoop := NewInstruction(']')
 	lastInst := NewInstruction('!')
 	for _, inst := range program {
-		if inst.operator == opMulVal ||
-			inst.operator == opDupVal {
-			lastInst = inst
-			continue
-		}
 		if inst.SameOp(endLoop) {
 			depth--
 		}
-		fmt.Fprintln(writer, strings.Repeat("\t", depth), instPrint(inst, lastInst))
+		printout := instPrint(inst, lastInst)
+		if printout != "" {
+			fmt.Fprintln(writer, strings.Repeat("\t", depth), printout)
+		}
 		if inst.SameOp(startLoop) {
 			depth++
 		}
