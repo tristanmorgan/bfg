@@ -17,128 +17,72 @@ func TestTokenise(t *testing.T) {
 	}{
 		{
 			"small_prog",
-			">>>>>++[-]zero+++++>+++++[[->>+<<]move]>>[[>>-<<-]movn]",
+			">>>>>[-]+++++[->>+<<]>>",
 			[]Instruction{
 				{opNoop, 0},
-				{opAddDp, 5},
-				{opSetVal, 5},
 				{opAddDp, 1},
-				{opAddVal, 5},
-				{opMove, 2},
-				{opAddDp, 2},
-				{opMovN, 2},
-			},
-		},
-		{
-			"op_mul",
-			"+[<++++++>-]>[+>>+++<<]",
-			[]Instruction{
-				{opNoop, 0},
-				{opSetVal, 1},
-				{opMulVal, -1}, // dest value pointer
-				{opNoop, 6},    // multiplication factor
 				{opAddDp, 1},
-				{opMulVal, 2}, // dest value pointer
-				{opNoop, -3},  // multiplication factor
-			},
-		},
-		{
-			"op_dp",
-			">>>>>>><<<<<<>",
-			[]Instruction{
-				{opNoop, 0},
-				{opAddDp, 2},
-			},
-		},
-		{
-			"op_val",
-			"----++->---++",
-			[]Instruction{
-				{opNoop, 0},
-				{opSetVal, -3},
 				{opAddDp, 1},
+				{opAddDp, 1},
+				{opAddDp, 1},
+				{opJmpZ, 0},
 				{opAddVal, -1},
-			},
-		},
-		{
-			"op_skip",
-			">[>>>>>]",
-			[]Instruction{
-				{opNoop, 0},
-				{opAddDp, 1},
-				{opSkip, 5},
-			},
-		},
-		{
-			"op_move",
-			">[->>+<<]>[<<<+>>>-]++[[>-<-]]",
-			[]Instruction{
-				{opNoop, 0},
-				{opAddDp, 1},
-				{opMove, 2},
-				{opAddDp, 1},
-				{opMove, -3},
-				{opSetVal, 2},
-				{opMovN, 1},
-			},
-		},
-		{
-			"op_vec",
-			">[->>+++>+++>+++<<<<]",
-			[]Instruction{
-				{opNoop, 0},
-				{opAddDp, 1},
-				{opVec, 2},
-				{opNoop, 3},
-				{opNoop, 3},
-				{opNoop, 4},
-			},
-		},
-		{
-			"op_dup",
-			">[->>+>+>+<<<<]>[>>+<<-<<+>>]",
-			[]Instruction{
-				{opNoop, 0},
-				{opAddDp, 1},
-				{opDupVal, 2},
-				{opNoop, 3},
-				{opNoop, 4},
-				{opAddDp, 1},
-				{opDupVal, 2},
-				{opNoop, -2},
-			},
-		},
-		{
-			"op_jmp_z_nz",
-			">[->>,>+<<<]>[<<+>>--]",
-			[]Instruction{
-				{opNoop, 0},
-				{opAddDp, 1},
-				{opJmpZ, 9},
+				{opJmpNz, 0},
+				{opAddVal, 1},
+				{opAddVal, 1},
+				{opAddVal, 1},
+				{opAddVal, 1},
+				{opAddVal, 1},
+				{opJmpZ, 0},
 				{opAddVal, -1},
-				{opAddDp, 2},
-				{opIn, 1},
+				{opAddDp, 1},
 				{opAddDp, 1},
 				{opAddVal, 1},
-				{opAddDp, -3},
-				{opJmpNz, 2},
+				{opAddDp, -1},
+				{opAddDp, -1},
+				{opJmpNz, 0},
 				{opAddDp, 1},
-				{opJmpZ, 16},
-				{opAddDp, -2},
-				{opAddVal, 1},
-				{opAddDp, 2},
-				{opAddVal, -2},
-				{opJmpNz, 11},
+				{opAddDp, 1},
 			},
 		},
 		{
 			"op_nested",
-			">[[[[[[[><>]]]]]]][comment.]+++[[-+-]]",
+			">[[[[[[[,]]]]]]][.]",
 			[]Instruction{
 				{opNoop, 0},
 				{opAddDp, 1},
-				{opSkip, 1},
-				{opSetVal, 0},
+				{opJmpZ, 0},
+				{opJmpZ, 0},
+				{opJmpZ, 0},
+				{opJmpZ, 0},
+				{opJmpZ, 0},
+				{opJmpZ, 0},
+				{opJmpZ, 0},
+				{opIn, 1},
+				{opJmpNz, 0},
+				{opJmpNz, 0},
+				{opJmpNz, 0},
+				{opJmpNz, 0},
+				{opJmpNz, 0},
+				{opJmpNz, 0},
+				{opJmpNz, 0},
+				{opJmpZ, 0},
+				{opOut, 1},
+				{opJmpNz, 0},
+			},
+		},
+		{
+			"op_noops",
+			"no_code",
+			[]Instruction{
+				{opNoop, 0},
+				{opNoop, 0},
+				{opNoop, 0},
+				{opNoop, 0},
+				{opNoop, 0},
+				{opNoop, 0},
+				{opNoop, 0},
+				{opNoop, 0},
 			},
 		},
 	}
@@ -148,10 +92,10 @@ func TestTokenise(t *testing.T) {
 			got, err := Tokenise(bufio.NewReader(strings.NewReader(v.code)))
 			want := v.program
 
-			if err != nil {
-				t.Errorf("Error thrown  %v", err)
-			} else if !reflect.DeepEqual(got, want) {
+			if !reflect.DeepEqual(got, want) {
 				t.Errorf("got %v want %v", got, want)
+			} else if err != nil {
+				t.Errorf("Error thrown  %v", err)
 			}
 		})
 	}

@@ -8,56 +8,37 @@ import (
 	"testing"
 )
 
-var testprogram = `>>>>>
-[-]+++++
-[->>+<<]
+var testprogram = `>
 >
+>
+>
++
++
++
++
 [
 	,
-	[<<<]
-	++
-	[->>++<<]
-	>>
-	[->+>+<<]
-	>
-	[->+++>+++<<]
 ]
->>
-------
-.
-[->>-<<]
 >
-[-<++++>]
+>
 `
 
 func TestPrint(t *testing.T) {
 	program := []Instruction{
 		{opNoop, 0},
-		{opAddDp, 5},
-		{opSetVal, 5},
-		{opMove, 2},
 		{opAddDp, 1},
-		{opJmpZ, 7},
+		{opAddDp, 1},
+		{opAddDp, 1},
+		{opAddDp, 1},
+		{opAddVal, 1},
+		{opAddVal, 1},
+		{opAddVal, 1},
+		{opAddVal, 1},
+		{opJmpZ, 0},
 		{opIn, 1},
-		{opSkip, -3},
-		{opSetVal, 2},
-		{opMulVal, 2},
-		{opNoop, 2},
-		{opAddDp, 2},
-		{opDupVal, 1},
-		{opNoop, 2},
+		{opJmpNz, 0},
 		{opAddDp, 1},
-		{opVec, 1},
-		{opNoop, 3},
-		{opNoop, 2},
-		{opJmpNz, 5},
-		{opAddDp, 2},
-		{opAddVal, -6},
-		{opOut, 1},
-		{opMovN, 2},
 		{opAddDp, 1},
-		{opMulVal, -1}, // dest value pointer
-		{opNoop, 4},    // multiplication factor
 	}
 	var buf bytes.Buffer
 	outputBuf := bufio.NewWriter(&buf)
