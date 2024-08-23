@@ -78,22 +78,29 @@ func Tokenise(input io.ByteReader) (program []Instruction, err error) {
 					pc++
 					program = append(program, Instruction{opNoop, factors[0]})
 				}
-			case pc-jmpPc == 7 || pc-jmpPc == 8: //looking for opDupVal
+			case pc-jmpPc >= 7: //looking for opDupVal
 				pointers, factors, ok := evalFactors(program[jmpPc+1 : pc])
-				if ok && factors[0] == 1 && factors[1] == 1 {
+				for i := range len(factors) {
+					ok = ok && factors[0] == factors[i]
+				}
+				if ok && factors[0] == 1 {
 					pc = jmpPc
 					program = program[:pc]
 					program = append(program, Instruction{opDupVal, pointers[0]})
-					pc++
-					program = append(program, Instruction{opNoop, pointers[1]})
-				} else if ok && factors[0] == factors[1] {
+					for _, v := range pointers[1:] {
+						pc++
+						program = append(program, Instruction{opNoop, v})
+					}
+				} else if ok {
 					pc = jmpPc
 					program = program[:pc]
 					program = append(program, Instruction{opVec, pointers[0]})
 					pc++
-					program = append(program, Instruction{opNoop, factors[1]})
-					pc++
-					program = append(program, Instruction{opNoop, pointers[1]})
+					program = append(program, Instruction{opNoop, factors[0]})
+					for _, v := range pointers[1:] {
+						pc++
+						program = append(program, Instruction{opNoop, v})
+					}
 				}
 			}
 		}

@@ -61,10 +61,22 @@ func instPrints(program []Instruction) iter.Seq[string] {
 				multiplier := repeatDirection("-", "+", program[pc+1].operand)
 				str = "[-" + repeatDirection("<", ">", inst.operand) + multiplier + repeatDirection(">", "<", inst.operand) + "]"
 			case opDupVal:
-				str = "[-" + repeatDirection("<", ">", inst.operand) + "+" + repeatDirection("<", ">", program[pc+1].operand-inst.operand) + "+" + repeatDirection(">", "<", program[pc+1].operand) + "]"
+				str = "[-" + repeatDirection("<", ">", inst.operand) + "+"
+				for pc+1 < len(program) && program[pc+1].operator == opNoop {
+					str = str + repeatDirection("<", ">", program[pc+1].operand-inst.operand) + "+"
+					pc++
+					inst = program[pc]
+				}
+				str = str + repeatDirection(">", "<", program[pc].operand) + "]"
 			case opVec:
 				multiplier := repeatDirection("-", "+", program[pc+1].operand)
-				str = "[-" + repeatDirection("<", ">", inst.operand) + multiplier + repeatDirection("<", ">", program[pc+2].operand-inst.operand) + multiplier + repeatDirection(">", "<", program[pc+2].operand) + "]"
+				str = "[-" + repeatDirection("<", ">", inst.operand) + multiplier
+				for pc+2 < len(program) && program[pc+2].operator == opNoop {
+					str = str + repeatDirection("<", ">", program[pc+2].operand-inst.operand) + multiplier
+					pc++
+					inst = program[pc+1]
+				}
+				str = str + repeatDirection(">", "<", program[pc+1].operand) + "]"
 			case opNoop:
 				continue
 			default:

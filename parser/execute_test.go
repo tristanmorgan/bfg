@@ -32,12 +32,13 @@ func TestExecuteSmall(t *testing.T) {
 		{opVec, 2},
 		{opNoop, 2},
 		{opNoop, 3},
+		{opNoop, 4},
 	}
 	startdata := make([]int, 65536)
 	outputBuf := bufio.NewWriter(&bufferWriter{})
 	inputBuf := bufio.NewReader(strings.NewReader("no input."))
 	data := Execute(startdata, program, inputBuf, outputBuf)[:10]
-	want := []int{0, 0, 0, 0, 0, -100, 20, 20, 0, 0}
+	want := []int{0, 0, 0, 0, 0, -100, 20, 20, 20, 0}
 
 	if !reflect.DeepEqual(data, want) {
 		t.Errorf("got %v want %v", data, want)
