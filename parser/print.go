@@ -20,18 +20,12 @@ func repeatDirection(neg, pos string, vect int) string {
 	return strings.Repeat(neg, abs(vect))
 }
 
-func instPrint(inst, lastInst, lastlastInst Instruction) string {
+func instPrint(inst Instruction) string {
 	switch inst.operator {
 	case opAddDp:
 		return repeatDirection("<", ">", inst.operand)
 	case opAddVal:
 		return repeatDirection("-", "+", inst.operand)
-	case opSetVal:
-		prefix := "[-]"
-		if lastInst.IsZeroOp() && inst.operand != 0 {
-			prefix = ""
-		}
-		return prefix + repeatDirection("-", "+", inst.operand)
 	case opOut:
 		return "."
 	case opIn:
@@ -40,23 +34,6 @@ func instPrint(inst, lastInst, lastlastInst Instruction) string {
 		return "["
 	case opJmpNz:
 		return "]"
-	case opMove:
-		return "[-" + repeatDirection("<", ">", inst.operand) + "+" + repeatDirection(">", "<", inst.operand) + "]"
-	case opMovN:
-		return "[-" + repeatDirection("<", ">", inst.operand) + "-" + repeatDirection(">", "<", inst.operand) + "]"
-	case opSkip:
-		return "[" + repeatDirection("<", ">", inst.operand) + "]"
-	case opNoop:
-		if lastInst.operator == opMulVal {
-			multiplier := repeatDirection("-", "+", inst.operand)
-			return "[-" + repeatDirection("<", ">", lastInst.operand) + multiplier + repeatDirection(">", "<", lastInst.operand) + "]"
-		} else if lastInst.operator == opDupVal {
-			return "[-" + repeatDirection("<", ">", lastInst.operand) + "+" + repeatDirection("<", ">", inst.operand-lastInst.operand) + "+" + repeatDirection(">", "<", inst.operand) + "]"
-		} else if lastlastInst.operator == opVec {
-			multiplier := repeatDirection("-", "+", lastInst.operand)
-			return "[-" + repeatDirection("<", ">", lastlastInst.operand) + multiplier + repeatDirection("<", ">", inst.operand-lastlastInst.operand) + multiplier + repeatDirection(">", "<", inst.operand) + "]"
-		}
-		return ""
 	default:
 		return ""
 	}
@@ -67,21 +44,17 @@ func Print(program []Instruction, writer *bufio.Writer) {
 	depth := 0
 	startLoop := NewInstruction('[')
 	endLoop := NewInstruction(']')
-	lastInst := NewInstruction('!')
-	lastlastInst := NewInstruction('!')
 	for _, inst := range program {
 		if inst.SameOp(endLoop) {
 			depth--
 		}
-		printout := instPrint(inst, lastInst, lastlastInst)
+		printout := instPrint(inst)
 		if printout != "" {
 			fmt.Fprintln(writer, strings.Repeat("\t", depth), printout)
 		}
 		if inst.SameOp(startLoop) {
 			depth++
 		}
-		lastlastInst = lastInst
-		lastInst = inst
 	}
 	writer.Flush()
 }
