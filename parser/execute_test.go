@@ -30,8 +30,8 @@ func TestExecuteSmall(t *testing.T) {
 		{opMovN, 2},
 		{opAddDp, 1},
 		{opVec, 2},
-		{opNoop, 3},
 		{opNoop, 2},
+		{opNoop, 3},
 	}
 	startdata := make([]int, 65536)
 	outputBuf := bufio.NewWriter(&bufferWriter{})

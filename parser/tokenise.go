@@ -98,9 +98,9 @@ func Tokenise(input io.ByteReader) (program []Instruction, err error) {
 					program = program[:pc]
 					program = append(program, Instruction{opVec, pointers[0]})
 					pc++
-					program = append(program, Instruction{opNoop, pointers[1]})
-					pc++
 					program = append(program, Instruction{opNoop, factors[1]})
+					pc++
+					program = append(program, Instruction{opNoop, pointers[1]})
 				}
 			}
 		}

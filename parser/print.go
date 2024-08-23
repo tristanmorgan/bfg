@@ -53,8 +53,8 @@ func instPrint(inst, lastInst, lastlastInst Instruction) string {
 		} else if lastInst.operator == opDupVal {
 			return "[-" + repeatDirection("<", ">", lastInst.operand) + "+" + repeatDirection("<", ">", inst.operand-lastInst.operand) + "+" + repeatDirection(">", "<", inst.operand) + "]"
 		} else if lastlastInst.operator == opVec {
-			multiplier := repeatDirection("-", "+", inst.operand)
-			return "[-" + repeatDirection("<", ">", lastlastInst.operand) + multiplier + repeatDirection("<", ">", lastInst.operand-lastlastInst.operand) + multiplier + repeatDirection(">", "<", lastInst.operand) + "]"
+			multiplier := repeatDirection("-", "+", lastInst.operand)
+			return "[-" + repeatDirection("<", ">", lastlastInst.operand) + multiplier + repeatDirection("<", ">", inst.operand-lastlastInst.operand) + multiplier + repeatDirection(">", "<", inst.operand) + "]"
 		}
 		return ""
 	default:

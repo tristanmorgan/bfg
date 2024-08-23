@@ -83,11 +83,11 @@ func Execute[T Number](data []T, program []Instruction, reader io.ByteReader, wr
 			data[dataPtr] = 0
 			pc++
 		case opVec:
-			factor := program[pc+2].operand
+			factor := program[pc+1].operand
 			dataVal := data[dataPtr] * T(factor)
 			firstPtr := (operand + dataPtr) & DataMask
 			data[firstPtr] += dataVal
-			secondPtr := (program[pc+1].operand + dataPtr) & DataMask
+			secondPtr := (program[pc+2].operand + dataPtr) & DataMask
 			data[secondPtr] += dataVal
 			data[dataPtr] = 0
 			pc++
