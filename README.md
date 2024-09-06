@@ -25,6 +25,7 @@ Operates with a instruction parse then execute pattern.
  * [>>+<<-] is merged into a move instruction.
  * [<+++++>-] is converted to a multiply instruction.
  * [<<+>+>-] is converted to a duplicate instruction.
+ * [<+++++>->+++++<] is converted to a vector multiply instruction.
  * and dead code removal.
 
 for performance comparison see no_optimisation branch.

@@ -18,7 +18,7 @@ As alluded earlier, the next optimisation was to combine repeated instructions a
 
 ## Complex Instructions
 
-The next step for finding areas of improvement was to take existing BF code and analyse it for common patterns. Out of that was a new instruction internally called "move", it takes the data from one cell and moves it by an offset. This has two variations where a decrement instruction was at the start of the loop and alternatively at the end (`[->>+<<]` vs `[>>+<<-]`). Again, functionally the result is the same. Later another common patter was discovered was what I called a skip instruction where the code looks through a series of values to stop on the first zeroed one `[>]`.
+The next step for finding areas of improvement was to take existing BF code and analyse it for common patterns. Out of that was a new instruction internally called "move", it takes the data from one cell and moves it by an offset. This has two variations where a decrement instruction was at the start of the loop and alternatively at the end (`[->>+<<]` vs `[>>+<<-]`). Again, functionally the result is the same. Later another common pattern was discovered was what I called a skip instruction where the code looks through a series of values to stop on the first zeroed one `[>]`.
 
 ## Performance Analysis
 
