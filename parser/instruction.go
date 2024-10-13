@@ -1,5 +1,10 @@
 package parser
 
+import (
+	"io"
+	"iter"
+)
+
 // Instruction structure for intermediate program
 type Instruction struct {
 	operator Opcode
@@ -35,6 +40,22 @@ var instMap = map[byte]Instruction{
 	',': {opIn, 1},
 	'[': {opJmpZ, 0},
 	']': {opJmpNz, 0},
+}
+
+// Instructions returns an iterator of the instructions.
+func Instructions(input io.ByteReader) iter.Seq[Instruction] {
+	return func(yield func(Instruction) bool) {
+
+		for {
+			chr, err := input.ReadByte()
+			if err == io.EOF {
+				break
+			}
+			if !yield(NewInstruction(chr)) {
+				return
+			}
+		}
+	}
 }
 
 // NewInstruction created from a sourcecode byte

@@ -1,8 +1,10 @@
 package parser
 
 import (
+	"bufio"
 	"fmt"
 	"reflect"
+	"strings"
 	"testing"
 	"unsafe"
 )
@@ -57,15 +59,16 @@ func TestNewInstruction(t *testing.T) {
 		{opJmpNz, 0},
 	}
 
-	for idx, val := range []byte(sourceCode) {
+	idx := 0
+	for got := range Instructions(bufio.NewReader(strings.NewReader(sourceCode))) {
 		t.Run(program[idx].String(), func(t *testing.T) {
-			got := NewInstruction(val)
 			want := program[idx]
 
 			if !reflect.DeepEqual(got, want) {
 				t.Errorf("got %v want %v", got, want)
 			}
 		})
+		idx++
 	}
 }
 
