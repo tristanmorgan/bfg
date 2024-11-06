@@ -51,16 +51,11 @@ func instPrints(program []Instruction) iter.Seq[string] {
 				str = "]"
 				depth--
 				indent = strings.Repeat("\t", depth)
-			case opMove:
-				str = "[-" + repeatDirection("<", ">", inst.operand) + "+" + repeatDirection(">", "<", inst.operand) + "]"
 			case opMovN:
 				str = "[-" + repeatDirection("<", ">", inst.operand) + "-" + repeatDirection(">", "<", inst.operand) + "]"
 			case opSkip:
 				str = "[" + repeatDirection("<", ">", inst.operand) + "]"
-			case opMulVal:
-				multiplier := repeatDirection("-", "+", program[pc+1].operand)
-				str = "[-" + repeatDirection("<", ">", inst.operand) + multiplier + repeatDirection(">", "<", inst.operand) + "]"
-			case opDupVal:
+			case opDupVal, opMove:
 				str = "[-" + repeatDirection("<", ">", inst.operand) + "+"
 				for pc+1 < len(program) && program[pc+1].operator == opNoop {
 					str = str + repeatDirection("<", ">", program[pc+1].operand-inst.operand) + "+"
@@ -68,7 +63,7 @@ func instPrints(program []Instruction) iter.Seq[string] {
 					inst = program[pc]
 				}
 				str = str + repeatDirection(">", "<", program[pc].operand) + "]"
-			case opVec:
+			case opVec, opMulVal:
 				multiplier := repeatDirection("-", "+", program[pc+1].operand)
 				str = "[-" + repeatDirection("<", ">", inst.operand) + multiplier
 				for pc+2 < len(program) && program[pc+2].operator == opNoop {
