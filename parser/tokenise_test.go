@@ -133,7 +133,7 @@ func TestTokenise(t *testing.T) {
 		},
 		{
 			"op_nested",
-			">[[[[[[[>]]]]]]][comment.]+++[[-]]",
+			">[[[[[[[><>]]]]]]][comment.]+++[[-+-]]",
 			[]Instruction{
 				{opNoop, 0},
 				{opAddDp, 1},

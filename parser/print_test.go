@@ -23,6 +23,7 @@ var testprogram = `>>>>>
 	[->+++>+++<<]
 ]
 >>
+------
 .
 [->>-<<]
 `
@@ -49,6 +50,7 @@ func TestPrint(t *testing.T) {
 		{opNoop, 2},
 		{opJmpNz, 5},
 		{opAddDp, 2},
+		{opAddVal, -6},
 		{opOut, 1},
 		{opMovN, 2},
 	}

@@ -2,10 +2,12 @@ package parser
 
 import (
 	"bufio"
+	"io"
 	"os"
 	"reflect"
 	"strings"
 	"testing"
+	"testing/iotest"
 )
 
 func TestExecuteSmall(t *testing.T) {
@@ -55,10 +57,11 @@ func TestTokeniseExecuteSmall(t *testing.T) {
   <[>+<-]> Add the next bit
   [<++>-]  double the result
   >[<+>-]< and move the bit counter
--]`)))
+-]
+,+[-,+]`)))
 	startdata := make([]int, 65536)
 	outputBuf := bufio.NewWriter(&bufferWriter{})
-	inputBuf := bufio.NewReader(strings.NewReader("no input."))
+	inputBuf := bufio.NewReader(iotest.ErrReader(io.EOF))
 	data := Execute(startdata, program, inputBuf, outputBuf)[:10]
 	want := []int{0, 0, 0, 170, 0, 0, 0, 0, 0, 0}
 

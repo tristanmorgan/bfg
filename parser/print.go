@@ -7,18 +7,11 @@ import (
 	"strings"
 )
 
-func abs(x int) int {
-	if x < 0 {
-		return -x
-	}
-	return x
-}
-
 func repeatDirection(neg, pos string, vect int) string {
 	if vect > 0 {
 		return strings.Repeat(pos, vect)
 	}
-	return strings.Repeat(neg, abs(vect))
+	return strings.Repeat(neg, -vect)
 }
 
 func instPrints(program []Instruction) iter.Seq[string] {
