@@ -26,6 +26,8 @@ var testprogram = `>>>>>
 ------
 .
 [->>-<<]
+>
+[-<++++>]
 `
 
 func TestPrint(t *testing.T) {
@@ -53,6 +55,9 @@ func TestPrint(t *testing.T) {
 		{opAddVal, -6},
 		{opOut, 1},
 		{opMovN, 2},
+		{opAddDp, 1},
+		{opMulVal, -1}, // dest value pointer
+		{opNoop, 4},    // multiplication factor
 	}
 	var buf bytes.Buffer
 	outputBuf := bufio.NewWriter(&buf)

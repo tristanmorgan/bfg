@@ -64,7 +64,7 @@ func instPrints(program []Instruction) iter.Seq[string] {
 					pc++
 					inst = program[pc+1]
 				}
-				str = str + repeatDirection(">", "<", program[pc+1].operand) + "]"
+				str = str + repeatDirection(">", "<", inst.operand) + "]"
 			case opNoop:
 				continue
 			default:
