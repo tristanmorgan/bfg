@@ -18,26 +18,26 @@ const (
 	opNoop Opcode = iota
 	opAddDp
 	opAddVal
-	opSetVal
-	opOut
-	opIn
-	opJmpZ
-	opJmpNz
-	opMove
-	opMovN
-	opSkip
-	opMulVal
 	opDupVal
+	opIn
+	opJmpNz
+	opJmpZ
+	opMovN
+	opMove
+	opMulVal
+	opOut
+	opSetVal
+	opSkip
 	opVec
 )
 
 var instMap = map[byte]Instruction{
-	'>': {opAddDp, 1},
-	'<': {opAddDp, -1},
 	'+': {opAddVal, 1},
+	',': {opIn, 1},
 	'-': {opAddVal, -1},
 	'.': {opOut, 1},
-	',': {opIn, 1},
+	'<': {opAddDp, -1},
+	'>': {opAddDp, 1},
 	'[': {opJmpZ, 0},
 	']': {opJmpNz, 0},
 }
