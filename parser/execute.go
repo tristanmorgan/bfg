@@ -19,7 +19,7 @@ type Number interface {
 
 // Execute a compiled program
 func Execute[T Number](data []T, program []Instruction, reader io.ByteReader, writer *bufio.Writer) []T {
-	var dataPtr, writeCount int = 0, 0
+	var dataPtr, writeCount = 0, 0
 	for pc := 0; pc < len(program); pc++ {
 		operand := program[pc].operand
 		switch program[pc].operator {

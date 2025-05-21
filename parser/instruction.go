@@ -1,3 +1,4 @@
+// Package parser provides the parsing and execution of BF code.
 package parser
 
 import (

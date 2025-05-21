@@ -7,7 +7,7 @@ import (
 
 // Tokenise sourcecode into an array of operators
 func Tokenise(input io.ByteReader) (program []Instruction, err error) {
-	var pc int = 0
+	var pc = 0
 	jmpStack := make([]int, 0)
 	program = append(program, Instruction{opNoop, 0})
 	pc++
