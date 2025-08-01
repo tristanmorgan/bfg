@@ -87,7 +87,7 @@ func BenchmarkExecute(b *testing.B) {
 	buff := bufio.NewReader(sourceFile)
 	program, _ := Tokenise(buff)
 	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
+	for range b.N {
 		inputBuf := bufio.NewReader(strings.NewReader("80\n"))
 		outputBuf := bufio.NewWriter(&bufferWriter{})
 		startdata := make([]int, 65536)
