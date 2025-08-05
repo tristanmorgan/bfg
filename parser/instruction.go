@@ -2,6 +2,7 @@
 package parser
 
 import (
+	"errors"
 	"io"
 	"iter"
 )
@@ -49,7 +50,7 @@ func Instructions(input io.ByteReader) iter.Seq[Instruction] {
 
 		for {
 			chr, err := input.ReadByte()
-			if err == io.EOF {
+			if errors.Is(err, io.EOF) {
 				break
 			}
 			if !yield(NewInstruction(chr)) {

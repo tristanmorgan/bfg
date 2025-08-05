@@ -2,6 +2,7 @@ package parser
 
 import (
 	"bufio"
+	"errors"
 	"io"
 	"math"
 )
@@ -43,7 +44,7 @@ func Execute[T Number](data []T, program []Instruction, reader io.ByteReader, wr
 			}
 			readVal, err := reader.ReadByte()
 			data[dataPtr] = T(readVal)
-			if err == io.EOF {
+			if errors.Is(err, io.EOF) {
 				data[dataPtr] = T(0)
 				data[dataPtr]--
 			} else if err != nil {

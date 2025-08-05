@@ -85,11 +85,12 @@ func inputReader(pathStr string, useDefault bool) (buff io.ByteReader, err error
 	if useDefault && pathStr == "" {
 		pathStr = "-"
 	}
-	if pathStr == "" {
+	switch pathStr {
+	case "":
 		return nil, errors.New("no path provided")
-	} else if pathStr == "-" {
+	case "-":
 		buff = bufio.NewReader(os.Stdin)
-	} else {
+	default:
 		sourceFile, err := os.Open(pathStr)
 		if err != nil {
 			return nil, err
