@@ -195,6 +195,9 @@ func BenchmarkTokenise(b *testing.B) {
 	b.ResetTimer()
 	for range b.N {
 		buff := bufio.NewReader(sourceFile)
-		Tokenise(buff)
+		_, err := Tokenise(buff)
+		if err != nil {
+			b.Errorf("Error thrown  %v", err)
+		}
 	}
 }

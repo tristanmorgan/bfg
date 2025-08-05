@@ -72,10 +72,10 @@ func (inst Instruction) SameOp(instTwo Instruction) bool {
 
 // IsZeroOp returns true for ops that have left the pointer on a zero
 func (inst Instruction) IsZeroOp() bool {
-	return !(inst.operator == opAddDp ||
-		inst.operator == opAddVal ||
-		inst.operator == opJmpZ ||
-		inst.operator == opOut ||
-		inst.operator == opIn ||
-		(inst.operator == opSetVal && inst.operand != 0))
+	return inst.operator != opAddDp &&
+		inst.operator != opAddVal &&
+		inst.operator != opJmpZ &&
+		inst.operator != opOut &&
+		inst.operator != opIn &&
+		(inst.operator != opSetVal || inst.operand == 0)
 }
