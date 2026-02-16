@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"reflect"
+	"slices"
 	"strings"
 	"testing"
 	"unsafe"
@@ -34,11 +35,8 @@ func TestInstructionSize(t *testing.T) {
 	sizes := []uintptr{2, 4, 8, 16, 32, 64, 128}
 	ok := false
 	got := unsafe.Sizeof(NewInstruction('-'))
-	for _, s := range sizes {
-		if s == got {
-			ok = true
-			break
-		}
+	if slices.Contains(sizes, got) {
+		ok = true
 	}
 	if !ok {
 		t.Errorf("size not in array: got %v", got)
