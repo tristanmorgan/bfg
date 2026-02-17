@@ -16,12 +16,12 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
     - name: Set up Go
-      uses: actions/setup-go@v5
+      uses: actions/setup-go@v6
       with:
-        go-version: '1.24'
+        go-version: '1.26'
         check-latest: true
 
     - name: Tidy
@@ -44,12 +44,12 @@ jobs:
         goarch: [arm64, amd64]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
-          go-version: '1.24'
+          go-version: '1.26'
           check-latest: true
 
       - name: Build
@@ -60,7 +60,7 @@ jobs:
           CGO_ENABLED: 0
         run: go build -a -trimpath -ldflags='-s -w' -o bfg_${{ matrix.goos }}_${{ matrix.goarch }}
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: bfg_${{ matrix.goos }}_${{ matrix.goarch }}
           path: cmd/bfg/bfg_${{ matrix.goos }}_${{ matrix.goarch }}
