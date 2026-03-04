@@ -2,7 +2,6 @@ package parser
 
 import (
 	"bufio"
-	"errors"
 	"os"
 	"reflect"
 	"strings"
@@ -166,12 +165,12 @@ func TestTokeniseError(t *testing.T) {
 		{
 			"too_many_open",
 			"[[[",
-			errors.New("tokenisation error: unexpected EOF"),
+			ErrUnexpectedEof,
 		},
 		{
 			"too_many_close",
 			"]]]",
-			errors.New("tokenisation error: unbalanced braces"),
+			ErrUnbalanced,
 		},
 	}
 

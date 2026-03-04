@@ -37,7 +37,7 @@ func TestExecuteSmall(t *testing.T) {
 		{opNoop, 4},
 	}
 	startdata := make([]int, 65536)
-	outputBuf := bufio.NewWriter(&bufferWriter{})
+	outputBuf := bufio.NewWriter(&bufferWriter{make([]byte, 512)})
 	inputBuf := bufio.NewReader(strings.NewReader("no input."))
 	data := Execute(startdata, program, inputBuf, outputBuf)[:10]
 	want := []int{0, 0, 0, 0, 0, -100, 20, 20, 20, 0}
@@ -60,7 +60,7 @@ func TestTokeniseExecuteSmall(t *testing.T) {
 -]
 ,+[-,+]`)))
 	startdata := make([]int, 65536)
-	outputBuf := bufio.NewWriter(&bufferWriter{})
+	outputBuf := bufio.NewWriter(&bufferWriter{make([]byte, 512)})
 	inputBuf := bufio.NewReader(iotest.ErrReader(io.EOF))
 	data := Execute(startdata, program, inputBuf, outputBuf)[:10]
 	want := []int{0, 0, 0, 170, 0, 0, 0, 0, 0, 0}
@@ -89,7 +89,7 @@ func BenchmarkExecute(b *testing.B) {
 	b.ResetTimer()
 	for range b.N {
 		inputBuf := bufio.NewReader(strings.NewReader("80\n"))
-		outputBuf := bufio.NewWriter(&bufferWriter{})
+		outputBuf := bufio.NewWriter(&bufferWriter{make([]byte, 512)})
 		startdata := make([]int, 65536)
 		Execute(startdata, program, inputBuf, outputBuf)
 	}

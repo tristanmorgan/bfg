@@ -26,6 +26,9 @@ var (
 	// (empty string) then it means that it is a final release. Otherwise, this
 	// is a pre-release such as "-dev" (in development), -"beta", "-rc1", etc.
 	VersionPrerelease = "-dev"
+
+	// ErrNoPath is returned when a file path was expected.
+        ErrNoPath = errors.New("no path provided")
 )
 
 func main() {
@@ -87,7 +90,7 @@ func inputReader(pathStr string, useDefault bool) (buff io.ByteReader, err error
 	}
 	switch pathStr {
 	case "":
-		return nil, errors.New("no path provided")
+		return nil, ErrNoPath
 	case "-":
 		buff = bufio.NewReader(os.Stdin)
 	default:

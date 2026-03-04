@@ -5,6 +5,14 @@ import (
 	"io"
 )
 
+var (
+	// ErrUnbalanced is returned when braces in source code dont balance.
+	ErrUnbalanced = errors.New("tokenisation error: unbalanced braces")
+
+	// ErrUnexpectedEof is returned when the source cuts off early.
+	ErrUnexpectedEof = errors.New("tokenisation error: unexpected EOF")
+)
+
 // Tokenise sourcecode into an array of operators
 func Tokenise(input io.ByteReader) (program []Instruction, err error) {
 	var pc = 0
@@ -48,7 +56,7 @@ func Tokenise(input io.ByteReader) (program []Instruction, err error) {
 			jmpStack = append(jmpStack, pc)
 		case opJmpNz:
 			if len(jmpStack) == 0 {
-				return nil, errors.New("tokenisation error: unbalanced braces")
+				return nil, ErrUnbalanced
 			}
 			jmpPc := jmpStack[len(jmpStack)-1]
 			jmpStack = jmpStack[:len(jmpStack)-1]
@@ -90,7 +98,7 @@ func Tokenise(input io.ByteReader) (program []Instruction, err error) {
 				}
 			case pc-jmpPc >= 7: //looking for opDupVal
 				pointers, factors, ok := evalFactors(program[jmpPc+1 : pc])
-				for i := range len(factors) {
+				for i := range factors {
 					ok = ok && factors[0] == factors[i]
 				}
 				if ok && factors[0] == 1 {
@@ -117,7 +125,7 @@ func Tokenise(input io.ByteReader) (program []Instruction, err error) {
 		pc++
 	}
 	if len(jmpStack) != 0 {
-		return nil, errors.New("tokenisation error: unexpected EOF")
+		return nil, ErrUnexpectedEof
 	}
 	return
 }
@@ -129,15 +137,16 @@ func evalFactors(program []Instruction) (pointers, factors []int, ok bool) {
 	pointers = make([]int, 0)
 	factors = make([]int, 0)
 	for _, inst := range program {
-		if inst.SameOp(NewInstruction('>')) {
+		switch {
+		case inst.SameOp(NewInstruction('>')):
 			collect += inst.operand
-		} else if collect == 0 && inst.SameOp(NewInstruction('-')) {
+		case collect == 0 && inst.SameOp(NewInstruction('-')):
 			ok = inst.operand == 1 || inst.operand == -1
 			invert = inst.operand == 1
-		} else if inst.SameOp(NewInstruction('-')) {
+		case inst.SameOp(NewInstruction('-')):
 			pointers = append(pointers, collect)
 			factors = append(factors, inst.operand)
-		} else {
+		default:
 			return pointers, factors, false
 		}
 	}
@@ -145,7 +154,7 @@ func evalFactors(program []Instruction) (pointers, factors []int, ok bool) {
 		return pointers, factors, false
 	}
 	if invert {
-		for i := range len(factors) {
+		for i := range factors {
 			factors[i] = 0 - factors[i]
 		}
 	}

@@ -18,10 +18,10 @@ func instPrints(program []Instruction) iter.Seq[string] {
 	return func(yield func(string) bool) {
 
 		depth := 0
-		indent := ""
+		var indent string
 		for pc, inst := range program {
 			indent = strings.Repeat("\t", depth)
-			str := ""
+			var str string
 			switch inst.operator {
 			case opAddDp:
 				str = repeatDirection("<", ">", inst.operand)
