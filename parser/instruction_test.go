@@ -112,6 +112,7 @@ func TestIsZeroOp(t *testing.T) {
 		}
 	}
 }
+
 func TestSameOp(t *testing.T) {
 	opsList := []Opcode{
 		opNoop,
@@ -143,5 +144,4 @@ func TestSameOp(t *testing.T) {
 			}
 		})
 	}
-
 }

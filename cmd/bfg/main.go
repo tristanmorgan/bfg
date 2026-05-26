@@ -28,17 +28,17 @@ var (
 	VersionPrerelease = "-dev"
 
 	// ErrNoPath is returned when a file path was expected.
-        ErrNoPath = errors.New("no path provided")
+	ErrNoPath = errors.New("no path provided")
 )
 
 func main() {
-	var version, eight, print bool
+	var version, eight, printflag bool
 	flag.BoolVar(&version, "v", false, "display version")
 	flag.BoolVar(&version, "version", false, "display version")
 	flag.BoolVar(&eight, "e", false, "eight bit execution")
 	flag.BoolVar(&eight, "eight", false, "eight bit execution")
-	flag.BoolVar(&print, "p", false, "pretty print parsed program")
-	flag.BoolVar(&print, "print", false, "pretty print parsed program")
+	flag.BoolVar(&printflag, "p", false, "pretty print parsed program")
+	flag.BoolVar(&printflag, "print", false, "pretty print parsed program")
 
 	flag.Usage = func() {
 		fmt.Printf("Usage:\n  %s [option] source.bf [input]\n", os.Args[0])
@@ -73,7 +73,7 @@ func main() {
 		fmt.Println("error compiling program: err:", err)
 		os.Exit(1)
 	}
-	if print {
+	if printflag {
 		parser.Print(program, outputBuf)
 	} else if eight {
 		data := make([]byte, parser.DataSize)

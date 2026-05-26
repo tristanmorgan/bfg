@@ -47,7 +47,6 @@ var instMap = map[byte]Instruction{
 // Instructions returns an iterator of the instructions.
 func Instructions(input io.ByteReader) iter.Seq[Instruction] {
 	return func(yield func(Instruction) bool) {
-
 		for {
 			chr, err := input.ReadByte()
 			if errors.Is(err, io.EOF) {

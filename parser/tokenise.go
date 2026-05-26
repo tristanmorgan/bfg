@@ -9,13 +9,13 @@ var (
 	// ErrUnbalanced is returned when braces in source code dont balance.
 	ErrUnbalanced = errors.New("tokenisation error: unbalanced braces")
 
-	// ErrUnexpectedEof is returned when the source cuts off early.
-	ErrUnexpectedEof = errors.New("tokenisation error: unexpected EOF")
+	// ErrUnexpectedEOF is returned when the source cuts off early.
+	ErrUnexpectedEOF = errors.New("tokenisation error: unexpected EOF")
 )
 
 // Tokenise sourcecode into an array of operators
 func Tokenise(input io.ByteReader) (program []Instruction, err error) {
-	var pc = 0
+	pc := 0
 	jmpStack := make([]int, 0)
 	program = append(program, Instruction{opNoop, 0})
 	pc++
@@ -96,7 +96,7 @@ func Tokenise(input io.ByteReader) (program []Instruction, err error) {
 					pc++
 					program = append(program, Instruction{opNoop, factors[0]})
 				}
-			case pc-jmpPc >= 7: //looking for opDupVal
+			case pc-jmpPc >= 7: // looking for opDupVal
 				pointers, factors, ok := evalFactors(program[jmpPc+1 : pc])
 				for i := range factors {
 					ok = ok && factors[0] == factors[i]
@@ -125,7 +125,7 @@ func Tokenise(input io.ByteReader) (program []Instruction, err error) {
 		pc++
 	}
 	if len(jmpStack) != 0 {
-		return nil, ErrUnexpectedEof
+		return nil, ErrUnexpectedEOF
 	}
 	return
 }

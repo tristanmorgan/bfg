@@ -165,7 +165,7 @@ func TestTokeniseError(t *testing.T) {
 		{
 			"too_many_open",
 			"[[[",
-			ErrUnexpectedEof,
+			ErrUnexpectedEOF,
 		},
 		{
 			"too_many_close",

@@ -16,7 +16,6 @@ func repeatDirection(neg, pos string, vect int) string {
 
 func instPrints(program []Instruction) iter.Seq[string] {
 	return func(yield func(string) bool) {
-
 		depth := 0
 		var indent string
 		for pc, inst := range program {
@@ -45,7 +44,15 @@ func instPrints(program []Instruction) iter.Seq[string] {
 				depth--
 				indent = strings.Repeat("\t", depth)
 			case opMovN:
-				str = "[-" + repeatDirection("<", ">", inst.operand) + "-" + repeatDirection(">", "<", inst.operand) + "]"
+				str = "[-" + repeatDirection(
+					"<",
+					">",
+					inst.operand,
+				) + "-" + repeatDirection(
+					">",
+					"<",
+					inst.operand,
+				) + "]"
 			case opSkip:
 				str = "[" + repeatDirection("<", ">", inst.operand) + "]"
 			case opDupVal, opMove:
@@ -60,7 +67,11 @@ func instPrints(program []Instruction) iter.Seq[string] {
 				multiplier := repeatDirection("-", "+", program[pc+1].operand)
 				str = "[-" + repeatDirection("<", ">", inst.operand) + multiplier
 				for pc+2 < len(program) && program[pc+2].operator == opNoop {
-					str = str + repeatDirection("<", ">", program[pc+2].operand-inst.operand) + multiplier
+					str = str + repeatDirection(
+						"<",
+						">",
+						program[pc+2].operand-inst.operand,
+					) + multiplier
 					pc++
 					inst = program[pc+1]
 				}
